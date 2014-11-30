@@ -4,19 +4,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import bdd.factory.ConnexionFactory;
 import donnees.Client;
+import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
-import exceptions.accesAuDonnees.CreationObjetException;
 
 public class ClientFactory {
 	
-	Map<String, Client> lesClients =  new HashMap<String, Client>();
 	static ClientFactory singleton;
 	
 	private ClientFactory(){
