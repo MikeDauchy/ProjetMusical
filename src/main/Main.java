@@ -1,4 +1,4 @@
-package affichage;
+package main;
 
 
 public class Main {
