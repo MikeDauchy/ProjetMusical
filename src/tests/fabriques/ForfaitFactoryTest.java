@@ -1,4 +1,4 @@
-package tests;
+package tests.fabriques;
 
 import static org.junit.Assert.assertEquals;
 
