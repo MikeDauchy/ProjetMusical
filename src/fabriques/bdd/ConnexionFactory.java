@@ -1,4 +1,4 @@
-package bdd.factory;
+package fabriques.bdd;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

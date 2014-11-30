@@ -13,7 +13,7 @@ import donnees.Client;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
-import fabriques.ClientFactory;
+import fabriques.donnes.ClientFactory;
 
 
 public class ClientFactoryTest {

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import exceptions.accesAuDonnees.ObjetInconnu;
-import fabriques.ClientFactory;
+import fabriques.donnes.ClientFactory;
 
 public class Forfait {
 

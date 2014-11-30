@@ -1,4 +1,4 @@
-package fabriques;
+package fabriques.donnes;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import bdd.factory.ConnexionFactory;
 import donnees.Forfait;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
+import fabriques.bdd.ConnexionFactory;
 
 
 public class ForfaitFactory {

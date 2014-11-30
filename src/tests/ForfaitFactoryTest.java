@@ -16,7 +16,7 @@ import donnees.Forfait;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
-import fabriques.ForfaitFactory;
+import fabriques.donnes.ForfaitFactory;
 
 public class ForfaitFactoryTest {
 	Forfait mokeForfait;

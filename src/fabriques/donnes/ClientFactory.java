@@ -1,4 +1,4 @@
-package fabriques;
+package fabriques.donnes;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import bdd.factory.ConnexionFactory;
 import donnees.Client;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
+import fabriques.bdd.ConnexionFactory;
 
 public class ClientFactory {
 	
