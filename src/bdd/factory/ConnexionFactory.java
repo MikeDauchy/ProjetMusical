@@ -14,7 +14,7 @@ public class ConnexionFactory {
 		try {
 			Class.forName("org.hsqldb.jdbcDriver");
 			c = DriverManager.getConnection(
-					"jdbc:hsqldb:file:bdd/annuaire;shutdown=true","sa", "");
+					"jdbc:hsqldb:file:bdd/projetMusical;shutdown=true","sa", "");
 		} catch (SQLException e) {
 			System.out.println("Echec de connexion à la BDD");
 		} catch (ClassNotFoundException e){
@@ -29,7 +29,7 @@ public class ConnexionFactory {
 		return connexionFactory.c;
 	}
 
-	public static void closeConnexion() throws SQLException{
+	public void closeConnexion() throws SQLException{
 		if(connexionFactory != null){
 			connexionFactory.c.close();
 			connexionFactory = null;

@@ -7,6 +7,7 @@ import donnees.reservations.Reservation;
 
 public class Client {
 
+	private int idClient;
 	private String nom;
 	private String prenom;
 	private String numTel;
@@ -15,12 +16,8 @@ public class Client {
 	private List<Reservation> listReservations = new ArrayList<Reservation>();
 	private List<Facture> listFactures = new ArrayList<Facture>();
 	
-	
-	public Client(String nom, String prenom, String numTel, int pointFidelite) {
-		this.nom = nom;
-		this.prenom = prenom;
-		this.numTel = numTel;
-		this.nbPointFidelite = pointFidelite;
+	public Client(){
+		super();
 	}
 
 	public String getNom() {
@@ -66,4 +63,61 @@ public class Client {
 	public void addFacture(Facture facture){
 		listFactures.add(facture);
 	}
+
+	public int getIdClient() {
+		return idClient;
+	}
+
+	public void setIdClient(int idClient) {
+		this.idClient = idClient;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + nbPointFidelite;
+		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+		result = prime * result + ((numTel == null) ? 0 : numTel.hashCode());
+		result = prime * result + ((prenom == null) ? 0 : prenom.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Client other = (Client) obj;
+		if (nbPointFidelite != other.nbPointFidelite)
+			return false;
+		if (nom == null) {
+			if (other.nom != null)
+				return false;
+		} else if (!nom.equals(other.nom))
+			return false;
+		if (numTel == null) {
+			if (other.numTel != null)
+				return false;
+		} else if (!numTel.equals(other.numTel))
+			return false;
+		if (prenom == null) {
+			if (other.prenom != null)
+				return false;
+		} else if (!prenom.equals(other.prenom))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Client [idClient=" + idClient + ", nom=" + nom + ", prenom="
+				+ prenom + ", numTel=" + numTel + ", nbPointFidelite="
+				+ nbPointFidelite + "]";
+	}
+	
+	
 }
