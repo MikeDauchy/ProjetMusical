@@ -1,4 +1,4 @@
-package exceptions.fabriques;
+package exceptions.accesAuDonnees;
 
 public class ObjetInconnu extends Exception {
 

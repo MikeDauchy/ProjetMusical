@@ -6,8 +6,8 @@ import java.util.Map;
 
 import donnees.Client;
 import donnees.Forfait;
-import exceptions.fabriques.ObjetExistant;
-import exceptions.fabriques.ObjetInconnu;
+import exceptions.accesAuDonnees.ObjetExistant;
+import exceptions.accesAuDonnees.ObjetInconnu;
 
 public class FabForfait {
 	Map<String, Map<String,Forfait>> lesForfaits =  new HashMap<String, List<Forfait>>();

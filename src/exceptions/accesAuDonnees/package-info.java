@@ -5,4 +5,4 @@
  * @author dauchy
  *
  */
-package exceptions.fabriques;
+package exceptions.accesAuDonnees;

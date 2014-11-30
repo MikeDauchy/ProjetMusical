@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import donnees.Client;
-import exceptions.fabriques.ObjetExistant;
-import exceptions.fabriques.ObjetInconnu;
+import exceptions.accesAuDonnees.ObjetExistant;
+import exceptions.accesAuDonnees.ObjetInconnu;
 
 public class FabClient {
 	
