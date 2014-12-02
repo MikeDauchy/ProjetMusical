@@ -18,18 +18,18 @@ import fabriques.donnes.ClientFactory;
 
 public class ClientFactoryTest {
 	
-	Client quentinClient;
-	List<Client> listClientQuentin = new ArrayList<Client>();
+	Client mockClient;
+	List<Client> listClientMock = new ArrayList<Client>();
 	
 	@Before
 	public void init() {
-		quentinClient = new Client();
-		quentinClient.setNom("Laujac");
-		quentinClient.setPrenom("Quentin");
-		quentinClient.setNumTel("0662487954");
-		quentinClient.setPointFidelite(12);
+		mockClient = new Client();
+		mockClient.setNom("mockqsdfqdfc");
+		mockClient.setPrenom("mockofn,fldocnd");
+		mockClient.setNumTel("0662487954");
+		mockClient.setPointFidelite(12);
 		
-		listClientQuentin.add(quentinClient);
+		listClientMock.add(mockClient);
 	}
 
 	/**
@@ -42,16 +42,16 @@ public class ClientFactoryTest {
 	@Test
 	public void testGlobal() throws CreationObjetException, ObjetExistant, SQLException, ObjetInconnu {
 		
-		Client client = ClientFactory.getInstance().creer("Laujac", "Quentin", "0662487954", 12);
-		assertEquals(client, quentinClient);
+		Client client = ClientFactory.getInstance().creer("mockqsdfqdfc", "mockofn,fldocnd", "0662487954", 12);
+		assertEquals(client, mockClient);
 		
-		assertEquals(ClientFactory.getInstance().rechercherById(client.getIdClient()), quentinClient);
+		assertEquals(ClientFactory.getInstance().rechercherById(client.getIdClient()), mockClient);
 		
 		List<Client> listClient = ClientFactory.getInstance().rechercherByNom(client.getNom());
-		assertEquals(listClient, listClientQuentin);
+		assertEquals(listClient, listClientMock);
 		
 		List<Client> listerClient = ClientFactory.getInstance().lister();
-		assertEquals(listerClient, listClientQuentin);
+		assertEquals(listerClient, listClientMock);
 		
 		ClientFactory.getInstance().supprimer(client);
 		

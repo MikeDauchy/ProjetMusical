@@ -60,4 +60,44 @@ public class Facture {
 		this.estPaye = estPaye;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (estPaye ? 1231 : 1237);
+		result = prime * result + idClient;
+		result = prime
+				* result
+				+ ((listReservations == null) ? 0 : listReservations.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Facture other = (Facture) obj;
+		if (estPaye != other.estPaye)
+			return false;
+		if (idClient != other.idClient)
+			return false;
+		if (listReservations == null) {
+			if (other.listReservations != null)
+				return false;
+		} else if (!listReservations.equals(other.listReservations))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Facture [idFacture=" + idFacture + ", idClient=" + idClient
+				+ ", estPaye=" + estPaye + ", listReservations="
+				+ listReservations + "]";
+	}
+
 }

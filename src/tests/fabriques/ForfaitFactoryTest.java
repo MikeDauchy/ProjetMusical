@@ -35,7 +35,7 @@ public class ForfaitFactoryTest {
 		dateFin = cal.getTime();
 		
 		mokeForfait = new Forfait();
-		mokeForfait.setIdClient(2);
+		mokeForfait.setIdClient(-2);
 		mokeForfait.setNbHeure(12);
 		mokeForfait.setDateDebut(dateDebut);
 		mokeForfait.setDateFin(dateFin);
@@ -54,7 +54,7 @@ public class ForfaitFactoryTest {
 	@Test
 	public void testGlobal() throws CreationObjetException, ObjetExistant, SQLException, ObjetInconnu {
 		
-		Forfait forfait = ForfaitFactory.getInstance().creer(2, 12, dateDebut, dateFin, 80);
+		Forfait forfait = ForfaitFactory.getInstance().creer(-2, 12, dateDebut, dateFin, 80);
 		assertEquals(mokeForfait, forfait);
 		
 		assertEquals(ForfaitFactory.getInstance().rechercherByIdForfait(forfait.getIdForfait()), mokeForfait);

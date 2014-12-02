@@ -3,6 +3,7 @@ package fabriques.donnes;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class ClientFactory {
 		}catch(ObjetInconnu e){
 			
 			String query = "INSERT INTO client (nom, prenom, numTel, nbPointFidelite) VALUES(?, ?, ?, ?)";
-			PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
+			PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.clearParameters();
 			preparedStatement.setString(1, nom);
 			preparedStatement.setString(2, prenom);
@@ -36,8 +37,12 @@ public class ClientFactory {
 			preparedStatement.setInt(4, nbPointFidelite);
 			preparedStatement.execute();
 			
+			ResultSet rs = preparedStatement.getGeneratedKeys();
+			rs.next();
+	        int idClient = rs.getInt(1);
+			
 			try {
-				client = rechercherByNom(nom).get(0);
+				client = rechercherById(idClient);
 			} catch (ObjetInconnu e1) {
 				throw new CreationObjetException("La creation du client avec le nom "+nom+" n'a pas fonctionnée");
 			}

@@ -3,10 +3,11 @@ package fabriques.donnes;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import donnees.Client;
+import donnees.Facture;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
@@ -14,10 +15,6 @@ import fabriques.bdd.ConnexionFactory;
 
 public class FactureFactory {
 
-	//FIXME: A coder !!!
-	
-	
-	
 static FactureFactory singleton;
 	
 	private FactureFactory(){
@@ -27,100 +24,96 @@ static FactureFactory singleton;
 	public Facture creer(int idClient, boolean estPaye) throws ObjetExistant, CreationObjetException, SQLException {
 			Facture facture;
 		
-			String query = "INSERT INTO client (nom, prenom, numTel, nbPointFidelite) VALUES(?, ?, ?, ?)";
-			PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
+			String query = "INSERT INTO facture (id_client, est_paye) VALUES(?, ?)";
+			PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.clearParameters();
-			preparedStatement.setString(1, nom);
-			preparedStatement.setString(2, prenom);
-			preparedStatement.setString(3, numTel);
-			preparedStatement.setInt(4, nbPointFidelite);
+			preparedStatement.setInt(1, idClient);
+			preparedStatement.setBoolean(2, estPaye);
 			preparedStatement.execute();
 			
+			ResultSet rs = preparedStatement.getGeneratedKeys();
+			rs.next();
+	        int idFacture = rs.getInt(1);
+			
 			try {
-				facture = rechercherByNom(nom).get(0);
+				facture = rechercherByIdFacture(idFacture);
 			} catch (ObjetInconnu e1) {
-				throw new CreationObjetException("La creation du client avec le nom "+nom+" n'a pas fonctionnée");
+				throw new CreationObjetException("La creation de la facture avec l'idClient "+idClient+" n'a pas fonctionnée");
 			}
 		
 		return facture;
 	}
 	
-	public List<Client> rechercherByNom(String nom) throws ObjetInconnu, SQLException{
+	public List<Facture> rechercherByIdClient(int idClient) throws ObjetInconnu, SQLException{
 		
-		List<Client> listClient = new ArrayList<Client>();
+		List<Facture> listFacture = new ArrayList<Facture>();
 		
-		String query = "Select id_client, nom, prenom, numTel, nbPointFidelite FROM client WHERE nom = ?";
-		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
-		preparedStatement.clearParameters();
-		preparedStatement.setString(1, nom);
-		ResultSet rs = preparedStatement.executeQuery();
-		
-		if(!rs.next())
-			throw new ObjetInconnu(Client.class.toString(), nom);
-		do{
-			Client client = new Client();
-			client.setIdClient(rs.getInt("id_client"));
-			client.setNom(rs.getString("nom"));
-			client.setPrenom(rs.getString("prenom"));
-			client.setNumTel(rs.getString("numTel"));
-			client.setPointFidelite(rs.getInt("nbPointFidelite"));
-			listClient.add(client);
-		}while(rs.next());
-		
-		return listClient;
-	}
-	
-	public Client rechercherById(int idClient) throws ObjetInconnu, SQLException{
-			
-		String query = "Select id_client, nom, prenom, numTel, nbPointFidelite FROM client WHERE id_client = ?";
+		String query = "Select id_facture, id_client, est_paye FROM facture WHERE id_client = ?";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		preparedStatement.clearParameters();
 		preparedStatement.setInt(1, idClient);
 		ResultSet rs = preparedStatement.executeQuery();
 		
 		if(!rs.next())
-			throw new ObjetInconnu(Client.class.toString(), "avec l'id "+idClient);
+			throw new ObjetInconnu(Facture.class.toString(), "avec l'idClient "+idClient);
+		do{
+			Facture facture = new Facture();
+			facture.setIdClient(rs.getInt("id_client"));
+			facture.setIdFacture(rs.getInt("id_facture"));
+			facture.setEstPaye(rs.getBoolean("est_paye"));
+			listFacture.add(facture);
+		}while(rs.next());
 		
-		Client client = new Client();
-		client.setIdClient(rs.getInt("id_client"));
-		client.setNom(rs.getString("nom"));
-		client.setPrenom(rs.getString("prenom"));
-		client.setNumTel(rs.getString("numTel"));
-		client.setPointFidelite(rs.getInt("nbPointFidelite"));
-		
-		return client;
+		return listFacture;
 	}
 	
-	public List<Client> lister() throws SQLException {
-		List<Client> listClient = new ArrayList<Client>();
+	public Facture rechercherByIdFacture(int idFacture) throws ObjetInconnu, SQLException{
+			
+		String query = "Select id_facture, id_client, est_paye FROM facture WHERE id_facture = ?";
+		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
+		preparedStatement.clearParameters();
+		preparedStatement.setInt(1, idFacture);
+		ResultSet rs = preparedStatement.executeQuery();
 		
-		String query = "Select id_client, nom, prenom, numTel, nbPointFidelite FROM client";
+		if(!rs.next())
+			throw new ObjetInconnu(Facture.class.toString(), "avec l'idFacture "+idFacture);
+		
+		Facture facture = new Facture();
+		facture.setIdClient(rs.getInt("id_client"));
+		facture.setIdFacture(rs.getInt("id_facture"));
+		facture.setEstPaye(rs.getBoolean("est_paye"));
+		
+		return facture;
+	}
+	
+	public List<Facture> lister() throws SQLException {
+		List<Facture> listFacture = new ArrayList<Facture>();
+		
+		String query = "Select id_client, id_facture, est_paye FROM facture";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		ResultSet rs = preparedStatement.executeQuery();
 		
 		while(rs.next()){
-			Client client = new Client();
-			client.setIdClient(rs.getInt("id_client"));
-			client.setNom(rs.getString("nom"));
-			client.setPrenom(rs.getString("prenom"));
-			client.setNumTel(rs.getString("numTel"));
-			client.setPointFidelite(rs.getInt("nbPointFidelite"));
-			listClient.add(client);
+			Facture facture = new Facture();
+			facture.setIdClient(rs.getInt("id_client"));
+			facture.setIdFacture(rs.getInt("id_facture"));
+			facture.setEstPaye(rs.getBoolean("est_paye"));
+			listFacture.add(facture);
 		}
 		
-		return listClient;
+		return listFacture;
 	}
 	
 	
-	public void supprimer(Client client) throws SQLException, ObjetInconnu{
+	public void supprimer(Facture facture) throws SQLException, ObjetInconnu{
 			
-		if(rechercherById(client.getIdClient()) == null)
-			throw new ObjetInconnu(Client.class.toString(), client.toString());
+		if(rechercherByIdFacture(facture.getIdFacture()) == null)
+			throw new ObjetInconnu(Facture.class.toString(), facture.toString());
 		
-		String query = "DELETE FROM client WHERE id_client = ?";
+		String query = "DELETE FROM facture WHERE id_facture = ?";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		preparedStatement.clearParameters();
-		preparedStatement.setInt(1, client.getIdClient());
+		preparedStatement.setInt(1, facture.getIdFacture());
 		preparedStatement.execute();
 	}
 	
