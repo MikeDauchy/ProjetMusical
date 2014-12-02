@@ -126,6 +126,8 @@ public class ForfaitFactory {
 	}
 	
 	
+	//TODO:ajouter la methode update
+	
 	public void supprimer(Forfait forfait) throws SQLException, ObjetInconnu{
 			
 		if(rechercherByIdClient(forfait.getIdClient()) == null)

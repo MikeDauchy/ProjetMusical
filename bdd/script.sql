@@ -22,6 +22,7 @@ CREATE TABLE forfait(
 );
 
 CREATE TABLE Reservation(
+	id_reservation int IDENTITY,
 	id_facture int,
 	id_salle int,
 	nb_heure int,

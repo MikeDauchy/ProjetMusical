@@ -1,0 +1,4 @@
+/*C2*/SET SCHEMA PUBLIC
+Drop TABLE Reservation
+CREATE TABLE Reservation(\u000a\u0009id_reservation int IDENTITY,\u000a\u0009id_facture int,\u000a\u0009id_salle int,\u000a\u0009nb_heure int,\u000a\u0009date_debut DATE,\u000a\u0009date_fin DATE,\u000a\u0009type_reservation int\u000a)
+DISCONNECT
