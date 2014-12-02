@@ -2,6 +2,7 @@ package main;
 
 import java.sql.SQLException;
 
+import affichage.FenetrePrincipal;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
@@ -17,6 +18,7 @@ public class Main {
 	 * @throws ObjetInconnu 
 	 */
 	public static void main(String[] args) throws CreationObjetException, ObjetExistant, SQLException, ObjetInconnu {
+		new FenetrePrincipal();
 	}
 
 }
