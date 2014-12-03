@@ -26,8 +26,8 @@ CREATE TABLE Reservation(
 	id_facture int,
 	id_salle int,
 	nb_heure int,
-	date_debut DATE,
-	date_fin DATE,
+	date_debut TIMESTAMP,
+	date_fin TIMESTAMP,
 	type_reservation int
 );
 

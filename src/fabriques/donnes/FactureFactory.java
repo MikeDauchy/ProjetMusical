@@ -15,7 +15,7 @@ import fabriques.bdd.ConnexionFactory;
 
 public class FactureFactory {
 
-static FactureFactory singleton;
+	static FactureFactory singleton;
 	
 	private FactureFactory(){
 		super();

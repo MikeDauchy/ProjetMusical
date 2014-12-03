@@ -1,6 +1,6 @@
 package donnees.reservations;
 
-public class reservationDeuxHeures extends Reservation {
+public class ReservationDeuxHeures extends Reservation {
 
 	@Override
 	public double getPrix() {
