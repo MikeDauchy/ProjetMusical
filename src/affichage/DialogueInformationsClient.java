@@ -39,13 +39,13 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	JList listClients = new JList (modelListEntree);
 
 
-	//les chmaps
+	//les champs clients
 	JTextField fieldNom = new JTextField (20);
 	JTextField fieldPrenom = new JTextField(20);
 	JTextField fieldNumero = new JTextField(20);
 	JTextField fieldPtFidelite = new JTextField(20);
 
-	// les boutons
+	// les boutons clients
 	JButton addC = new JButton ("Ajouter");
 	JButton deleteC = new JButton ("Supprimer");
 	JButton clearC = new JButton ("Clear");
@@ -55,15 +55,23 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	JList listReservations =new JList();
 	JList listForfaits =new JList();
 	
-	//les champs
+	//les champs réervations
 	JTextField fieldDate = new JTextField (20);
 	JTextField fieldHoraire = new JTextField(20);
 	JTextField fieldSalle = new JTextField(20);
 	JTextField fieldEtat = new JTextField(20);
 
-	// les boutons
+	// les boutons réservations
 	JButton confR = new JButton ("Valider");
 	JButton annulR = new JButton ("Annuler");
+	
+	//les champs forfaits
+	JTextField fieldID = new JTextField (20);
+	JTextField fieldNbHeuresDispo = new JTextField(20);
+
+	// les boutons forfaits
+	JButton createF = new JButton ("Creer");
+	JButton updateF = new JButton ("Modifier");
 
 	//Entree entreeSelectionne;
 
@@ -102,7 +110,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		pboutonsC.add (addC);
 		pboutonsC.add (deleteC);
 		pboutonsC.add (clearC);
-		pboutonsC.setBorder(BorderFactory.createEmptyBorder(50,10,10,10));
+		pboutonsC.setBorder(BorderFactory.createEmptyBorder(70,10,10,10));
 
 
 		JPanel formC = new JPanel (new BorderLayout());
@@ -131,20 +139,23 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 		//construction du panel de droite
 		
-		//construction des text field pour saisie ou affichage
+		//construction des text field réservations pour saisie ou affichage
 		JLabel labelDate = new JLabel ("Date :");
 		JLabel labelHoraire = new JLabel ("Horaire :");
 		JLabel labelSalle = new JLabel ("Salle : ");
 		JLabel labelEtat = new JLabel ("Etat : ");
-		
 
-		//on met les labels et les fields dans des panels
+		//Construction des text field forfait pour saisie ou affichage
+		JLabel labelID = new JLabel("ID : ");
+		JLabel labelNbHeuresDispo = new JLabel ("Nombre d'heures : ");
+
+		//on met les labels et les fields réservations dans des panels
 		JPanel lesLabelsR = new JPanel(new GridLayout (0,1));
 		lesLabelsR.add (labelDate);
 		lesLabelsR.add (labelHoraire);
 		lesLabelsR.add (labelSalle);
 		lesLabelsR.add (labelEtat);
-		lesLabelsR.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
+		lesLabelsR.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		JPanel lesFieldsR = new JPanel(new GridLayout (0,1));
 		lesFieldsR.add (fieldDate);
 		lesFieldsR.add(fieldHoraire);
@@ -152,28 +163,49 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		lesFieldsR.add(fieldEtat);
 		lesFieldsR.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 
-		// construction d'un panel pour mettre les 2 boutons
+		//on met les labels et les fields forfaits dans des panels
+		JPanel lesLabelsF = new JPanel(new GridLayout (0,1));
+		lesLabelsF.add (labelID);
+		lesLabelsF.add (labelNbHeuresDispo);
+		lesLabelsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
+		JPanel lesFieldsF = new JPanel(new GridLayout (0,1));
+		lesFieldsF.add (fieldID);
+		lesFieldsF.add(fieldNbHeuresDispo);
+		lesFieldsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
+		
+		// construction d'un panel pour mettre les 2 boutons réservation
 		JPanel pboutonsR = new JPanel (new GridLayout (1,0));
 		pboutonsR.add (confR);
 		pboutonsR.add (annulR);
 		pboutonsR.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-
+		
 		JPanel formR = new JPanel (new BorderLayout());
 		formR.add (lesLabelsR, BorderLayout.WEST);
 		formR.add (lesFieldsR, BorderLayout.EAST);
 		formR.add (pboutonsR, BorderLayout.SOUTH);
+		
+		//construction d'un panel pour mettre les 2 boutons forfait
+		JPanel pboutonsF = new JPanel(new GridLayout(1,0));
+		pboutonsF.add (createF);
+		pboutonsF.add (updateF);
+		pboutonsF.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));		
 
-		// Ajout ScrollPane
+		JPanel formF = new JPanel (new BorderLayout());
+		formF.add (lesLabelsF, BorderLayout.WEST);
+		formF.add (lesFieldsF, BorderLayout.EAST);
+		formF.add (pboutonsF, BorderLayout.SOUTH);
+		
+		// Ajout ScrollPane reservations
 		JScrollPane listReservationsScrollPane = new JScrollPane (listReservations);
-		JScrollPane listForfaitsScrollPane = new JScrollPane (listForfaits);
-
 		listReservationsScrollPane.setPreferredSize (new Dimension (100,100));
 		listReservationsScrollPane.setMinimumSize (new Dimension (200,200));
 		listReservationsScrollPane.setBorder (BorderFactory.createTitledBorder (
 				BorderFactory.createLineBorder (Color.cyan),
 				"Réservations"));
 		listReservations.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
-		
+
+		//Ajout ScrollPane forfaits
+		JScrollPane listForfaitsScrollPane = new JScrollPane (listForfaits);
 		listForfaitsScrollPane.setPreferredSize (new Dimension (100,100));
 		listForfaitsScrollPane.setMinimumSize (new Dimension (100,100));
 		listForfaitsScrollPane.setBorder (BorderFactory.createTitledBorder (
@@ -192,6 +224,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		panelDroite.add(listReservationsScrollPane);
 		panelDroite.add(formR);
 		panelDroite.add(listForfaitsScrollPane);
+		panelDroite.add(formF);
 			
 		// TODO: Ajouter labels + fields pour la gestion des forfaits
 		
