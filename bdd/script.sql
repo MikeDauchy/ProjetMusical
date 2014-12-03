@@ -34,5 +34,5 @@ CREATE TABLE Reservation(
 CREATE TABLE Salle(
 	id_salle int IDENTITY,
 	description varchar(250),
-	type_salle int
+	type_salle varchar(250)
 );
