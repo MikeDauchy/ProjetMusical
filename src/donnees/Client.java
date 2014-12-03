@@ -1,9 +1,14 @@
 package donnees;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 import donnees.reservations.Reservation;
+import exceptions.accesAuDonnees.ObjetInconnu;
+import fabriques.donnes.FactureFactory;
+import fabriques.donnes.ForfaitFactory;
+import fabriques.donnes.ReservationFactory;
+
 
 public class Client {
 
@@ -12,9 +17,6 @@ public class Client {
 	private String prenom;
 	private String numTel;
 	private int nbPointFidelite;
-	private List<Forfait> listForfait = new ArrayList<Forfait>();
-	private List<Reservation> listReservations = new ArrayList<Reservation>();
-	private List<Facture> listFactures = new ArrayList<Facture>();
 	
 	public Client(){
 		super();
@@ -52,18 +54,18 @@ public class Client {
 		this.nbPointFidelite = pointFidelite;
 	}
 	
-	public void addForfait(Forfait forfait){
-		listForfait.add(forfait);
-	}
-	
-	public void addReservation(Reservation reservation){
-		listReservations.add(reservation);
-	}
-	
-	public void addFacture(Facture facture){
-		listFactures.add(facture);
+	public List<Facture> getListFactures() throws ObjetInconnu, SQLException{
+		return FactureFactory.getInstance().rechercherByIdClient(idClient);
 	}
 
+	public List<Forfait> getListFofaits() throws ObjetInconnu, SQLException{
+		return ForfaitFactory.getInstance().rechercherByIdClient(idClient);
+	}
+	
+	public List<Reservation> getListReservations() throws SQLException, ObjetInconnu{
+		return ReservationFactory.getInstance().listerByIdClient(idClient);
+	}
+	
 	public int getIdClient() {
 		return idClient;
 	}

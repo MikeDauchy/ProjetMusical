@@ -7,7 +7,7 @@ public abstract class Salle {
 	protected int idSalle;
 	
 	public enum type {
-		PETITE, MOYENNE, GRANDE
+		PETITE, MOYENNE, ENREGISTREMENT
 	}
 	
 	public int getIdSalle() {
@@ -26,7 +26,7 @@ public abstract class Salle {
 		this.description = description;
 	}
 
-	abstract double getPrix();
+	public abstract double getPrix();
 
 
 	@Override

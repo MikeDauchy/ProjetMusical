@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import donnees.Facture;
 import donnees.Forfait;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
@@ -126,7 +127,21 @@ public class ForfaitFactory {
 	}
 	
 	
-	//TODO:ajouter la methode update
+	public void update(Forfait forfait) throws ObjetInconnu, SQLException{
+		if(rechercherByIdForfait(forfait.getIdForfait()) == null)
+			throw new ObjetInconnu(Forfait.class.toString(), forfait.toString());
+		
+		String query = "UPDATE forfait SET id_client = ?, nb_heure = ?, date_debut = ?, date_fin = ?, montant = ? WHERE id_forfait = ?";
+		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
+		preparedStatement.clearParameters();
+		preparedStatement.setInt(1, forfait.getIdClient());
+		preparedStatement.setInt(2, forfait.getNbHeure());
+		preparedStatement.setDate(3, new java.sql.Date(forfait.getDateDebut().getTime()));
+		preparedStatement.setDate(4, new java.sql.Date(forfait.getDateFin().getTime()));
+		preparedStatement.setDouble(5, forfait.getMontant());
+		preparedStatement.setDouble(6, forfait.getIdForfait());
+		preparedStatement.executeUpdate();
+	}
 	
 	public void supprimer(Forfait forfait) throws SQLException, ObjetInconnu{
 			

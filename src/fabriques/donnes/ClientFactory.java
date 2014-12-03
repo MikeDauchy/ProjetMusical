@@ -117,6 +117,21 @@ public class ClientFactory {
 		return listClient;
 	}
 	
+	public void update(Client client) throws ObjetInconnu, SQLException{
+		if(rechercherById(client.getIdClient()) == null)
+			throw new ObjetInconnu(Client.class.toString(), client.toString());
+		
+		String query = "UPDATE client SET nom = ?, prenom = ?, numTel = ?, nbPointFidelite = ? WHERE id_client = ?";
+		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
+		preparedStatement.clearParameters();
+		preparedStatement.setString(1, client.getNom());
+		preparedStatement.setString(2, client.getPrenom());
+		preparedStatement.setString(3, client.getNumTel());
+		preparedStatement.setInt(4, client.getPointFidelite());
+		preparedStatement.setInt(5, client.getIdClient());
+		preparedStatement.execute();
+	}
+	
 	
 	public void supprimer(Client client) throws SQLException, ObjetInconnu{
 			

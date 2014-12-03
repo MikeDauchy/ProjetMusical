@@ -2,7 +2,7 @@ package donnees.salles;
 
 public class MoyenneSalle extends Salle {
 
-	double getPrix() {
+	public double getPrix() {
 		return 10;
 	}
 

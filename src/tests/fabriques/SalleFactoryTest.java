@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import donnees.salles.GrandeSalle;
+import donnees.salles.EnregistrementSalle;
 import donnees.salles.Salle;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
@@ -22,7 +22,7 @@ public class SalleFactoryTest {
 	
 	@Before
 	public void init() {
-		mockSalle = new GrandeSalle();
+		mockSalle = new EnregistrementSalle();
 		mockSalle.setDescription("Sale B-25 Grande");
 		
 		listSalleMock.add(mockSalle);
@@ -38,11 +38,11 @@ public class SalleFactoryTest {
 	@Test
 	public void testGlobal() throws CreationObjetException, ObjetExistant, SQLException, ObjetInconnu {
 		
-		Salle salle = SalleFactory.getInstance().creer("Sale B-25 Grande", Salle.type.GRANDE);
+		Salle salle = SalleFactory.getInstance().creer("Sale B-25 Grande", Salle.type.ENREGISTREMENT);
 		assertEquals(mockSalle, salle);
 		assertEquals(salle.getClass(), mockSalle.getClass());
 		
-		List<Salle> listSalle = SalleFactory.getInstance().listerByType(Salle.type.GRANDE);
+		List<Salle> listSalle = SalleFactory.getInstance().listerByType(Salle.type.ENREGISTREMENT);
 		assertEquals(listSalle, listSalleMock);
 		
 		List<Salle> listerSalle = SalleFactory.getInstance().lister();

@@ -7,13 +7,13 @@ import java.util.List;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
 import fabriques.donnes.ClientFactory;
+import fabriques.donnes.ReservationFactory;
 
 public class Facture {
 
 	private int idFacture;
 	private int idClient;
 	private boolean estPaye;
-	private List<Reservation> listReservations = new ArrayList<Reservation>();
 
 	public int getIdFacture() {
 		return idFacture;
@@ -25,6 +25,14 @@ public class Facture {
 
 	public int getIdClient() {
 		return idClient;
+	}
+	
+	public boolean isEstPaye() {
+		return estPaye;
+	}
+
+	public void setEstPaye(boolean estPaye) {
+		this.estPaye = estPaye;
 	}
 
 	public void setIdClient(int idClient) {
@@ -39,25 +47,16 @@ public class Facture {
 		this.idClient = client.getIdClient();
 	}
 
-	public List<Reservation> getListReservations() {
-		return listReservations;
+	public List<Reservation> getListReservations() throws SQLException, ObjetInconnu {
+		return ReservationFactory.getInstance().listerByIdFacture(idFacture);
 	}
 
-	public void setListReservations(List<Reservation> listReservations) {
-		this.listReservations = listReservations;
-	}
-
-	public double getMontant() {
-		// TODO:A coder !
-		return -1;
-	}
-
-	public boolean isEstPaye() {
-		return estPaye;
-	}
-
-	public void setEstPaye(boolean estPaye) {
-		this.estPaye = estPaye;
+	public double getMontant() throws SQLException, ObjetInconnu {
+		double montant = 0;
+		for(Reservation reservation : getListReservations()){
+			montant += reservation.getPrix();
+		}
+		return montant;
 	}
 
 	@Override
@@ -66,9 +65,6 @@ public class Facture {
 		int result = 1;
 		result = prime * result + (estPaye ? 1231 : 1237);
 		result = prime * result + idClient;
-		result = prime
-				* result
-				+ ((listReservations == null) ? 0 : listReservations.hashCode());
 		return result;
 	}
 
@@ -85,19 +81,15 @@ public class Facture {
 			return false;
 		if (idClient != other.idClient)
 			return false;
-		if (listReservations == null) {
-			if (other.listReservations != null)
-				return false;
-		} else if (!listReservations.equals(other.listReservations))
-			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "Facture [idFacture=" + idFacture + ", idClient=" + idClient
-				+ ", estPaye=" + estPaye + ", listReservations="
-				+ listReservations + "]";
+				+ ", estPaye=" + estPaye + "]";
 	}
+
+	
 
 }

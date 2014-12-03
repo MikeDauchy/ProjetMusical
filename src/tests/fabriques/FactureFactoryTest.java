@@ -9,12 +9,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import donnees.Client;
 import donnees.Facture;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
-import fabriques.donnes.ClientFactory;
 import fabriques.donnes.FactureFactory;
 
 public class FactureFactoryTest {
