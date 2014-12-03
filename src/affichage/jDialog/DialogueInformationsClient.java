@@ -1,4 +1,4 @@
-package affichage;
+package affichage.jDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -55,13 +55,13 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	JList listReservations =new JList();
 	JList listForfaits =new JList();
 	
-	//les champs réervations
+	//les champs rï¿½ervations
 	JTextField fieldDate = new JTextField (20);
 	JTextField fieldHoraire = new JTextField(20);
 	JTextField fieldSalle = new JTextField(20);
 	JTextField fieldEtat = new JTextField(20);
 
-	// les boutons réservations
+	// les boutons rï¿½servations
 	JButton confR = new JButton ("Valider");
 	JButton annulR = new JButton ("Annuler");
 	
@@ -85,8 +85,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		//construction des text field pour saisie ou affichage
 		JLabel labelNom = new JLabel ("Nom :");
 		JLabel labelPrenom = new JLabel ("Prenom : ");
-		JLabel labelNumero = new JLabel ("Numéro : ");
-		JLabel labelPtFidelite = new JLabel ("Points de fidélité : ");
+		JLabel labelNumero = new JLabel ("Numï¿½ro : ");
+		JLabel labelPtFidelite = new JLabel ("Points de fidï¿½litï¿½ : ");
 		
 		
 
@@ -139,7 +139,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 		//construction du panel de droite
 		
-		//construction des text field réservations pour saisie ou affichage
+		//construction des text field rï¿½servations pour saisie ou affichage
 		JLabel labelDate = new JLabel ("Date :");
 		JLabel labelHoraire = new JLabel ("Horaire :");
 		JLabel labelSalle = new JLabel ("Salle : ");
@@ -149,7 +149,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		JLabel labelID = new JLabel("ID : ");
 		JLabel labelNbHeuresDispo = new JLabel ("Nombre d'heures : ");
 
-		//on met les labels et les fields réservations dans des panels
+		//on met les labels et les fields rï¿½servations dans des panels
 		JPanel lesLabelsR = new JPanel(new GridLayout (0,1));
 		lesLabelsR.add (labelDate);
 		lesLabelsR.add (labelHoraire);
@@ -173,7 +173,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		lesFieldsF.add(fieldNbHeuresDispo);
 		lesFieldsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 		
-		// construction d'un panel pour mettre les 2 boutons réservation
+		// construction d'un panel pour mettre les 2 boutons rï¿½servation
 		JPanel pboutonsR = new JPanel (new GridLayout (1,0));
 		pboutonsR.add (confR);
 		pboutonsR.add (annulR);
@@ -201,7 +201,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		listReservationsScrollPane.setMinimumSize (new Dimension (200,200));
 		listReservationsScrollPane.setBorder (BorderFactory.createTitledBorder (
 				BorderFactory.createLineBorder (Color.cyan),
-				"Réservations"));
+				"Rï¿½servations"));
 		listReservations.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
 
 		//Ajout ScrollPane forfaits
@@ -246,9 +246,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		} else if(o== clearC) {
 			// Nettoyer info fields client
 		} else if(o== confR) {
-			// Confirm réservation
+			// Confirm rï¿½servation
 		} else if(o== annulR) {
-			// Annuler réservation
+			// Annuler rï¿½servation
 		}else {
 			return;
 		}

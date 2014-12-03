@@ -1,4 +1,4 @@
-package affichage;
+package affichage.jDialog;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -25,7 +25,7 @@ public class DialogueConsulterReservation extends JPanel{
 	private Dialog dialog;
 	private JTable tableau;
 
-	JLabel labelTitre = new JLabel("Consultation des réservations");
+	JLabel labelTitre = new JLabel("Consultation des rï¿½servations");
 
 	Object[][] data={ 	
 			{"8h",null,null,null,null,null, null},
