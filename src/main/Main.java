@@ -12,12 +12,9 @@ public class Main {
 
 	/**
 	 * @param args
-	 * @throws SQLException 
-	 * @throws ObjetExistant 
-	 * @throws CreationObjetException 
-	 * @throws ObjetInconnu 
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws CreationObjetException, ObjetExistant, SQLException, ObjetInconnu {
+	public static void main(String[] args) throws Exception {
 		new FenetrePrincipal();
 	}
 

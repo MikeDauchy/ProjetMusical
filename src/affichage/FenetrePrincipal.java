@@ -10,7 +10,7 @@ public class FenetrePrincipal extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public FenetrePrincipal() {
+	public FenetrePrincipal() throws Exception {
 		super();
 		setTitle("Réservation d'une salle");
 		getContentPane().add(new ChoixMenuPrincipalPanel(this));

@@ -20,10 +20,6 @@ import javax.swing.JTextField;
 
 public class DialogueConsulterReservation extends JPanel{
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Dialog dialog;
@@ -49,16 +45,18 @@ public class DialogueConsulterReservation extends JPanel{
 
 	public DialogueConsulterReservation(Dialog dialog) throws HeadlessException {
 		super();
-
+		
 		this.dialog = dialog;
 		
 		this.tableau =new JTable(data,title);
+
+		tableau.setRowHeight(50);
 		
 		labelTitre.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(labelTitre);
 		add(new JScrollPane(tableau));
 		
-		
+
 		setLayout( new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		labelTitre.setForeground(Color.blue);

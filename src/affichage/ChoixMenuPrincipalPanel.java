@@ -1,5 +1,6 @@
 package affichage;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -26,7 +27,7 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 
 	private JDialog dialogConsulterReservation;
 	private JFrame dialogEditerReservation;
-	private JFrame dialogInformationsClient;
+	private JDialog dialogInformationsClient;
 
 
 	private JButton boutonConsulterReservation = new JButton("Consulter réservation");
@@ -48,15 +49,22 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	public ChoixMenuPrincipalPanel(JFrame frame) {
+	public ChoixMenuPrincipalPanel(JFrame frame) throws Exception {
 		super();
 		this.frame = frame;
 		dialogConsulterReservation = new JDialog(frame, "Consulter Reservation", true);
-		dialogConsulterReservation.getContentPane().add(new DialogueConsulterReservation(dialogConsulterReservation));
+		dialogConsulterReservation.getContentPane().add(new DialogueConsulterReservation(dialogConsulterReservation), BorderLayout.CENTER);
 		dialogConsulterReservation.setLocationRelativeTo(frame);
 		dialogConsulterReservation.pack();
+		
+		dialogInformationsClient = new JDialog (frame, "Informations client",true);
+		dialogInformationsClient.getContentPane().add(new DialogueInformationsClient(dialogInformationsClient), BorderLayout.CENTER);
+		dialogInformationsClient.setLocationRelativeTo(frame);
+		dialogInformationsClient.pack();
+		
 
 		boutonConsulterReservation.addActionListener(this);
+		boutonInformationsClient.addActionListener(this);
 
 		JPanel boutonPanel = new JPanel();
 		boutonPanel.add(boutonConsulterReservation);
