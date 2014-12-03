@@ -3,7 +3,7 @@ package donnees.salles;
 
 public class PetiteSalle extends Salle{
  
-	double getPrix() {
+	public double getPrix() {
 		return 7;
 	}
 

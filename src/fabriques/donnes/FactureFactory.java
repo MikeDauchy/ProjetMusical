@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import donnees.Client;
 import donnees.Facture;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
@@ -104,6 +105,18 @@ public class FactureFactory {
 		return listFacture;
 	}
 	
+	public void update(Facture facture) throws ObjetInconnu, SQLException{
+		if(rechercherByIdFacture(facture.getIdFacture()) == null)
+			throw new ObjetInconnu(Facture.class.toString(), facture.toString());
+		
+		String query = "UPDATE facture SET id_client = ?, est_paye = ? WHERE id_Facture = ?";
+		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
+		preparedStatement.clearParameters();
+		preparedStatement.setInt(1, facture.getIdClient());
+		preparedStatement.setBoolean(2, facture.isEstPaye());
+		preparedStatement.setInt(3, facture.getIdFacture());
+		preparedStatement.execute();
+	}
 	
 	public void supprimer(Facture facture) throws SQLException, ObjetInconnu{
 			

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import donnees.Facture;
-import donnees.salles.GrandeSalle;
+import donnees.salles.EnregistrementSalle;
 import donnees.salles.MoyenneSalle;
 import donnees.salles.PetiteSalle;
 import donnees.salles.Salle;
@@ -67,8 +67,8 @@ static SalleFactory singleton;
 				salle = new PetiteSalle();break;
 			case MOYENNE:
 				salle = new MoyenneSalle();break;
-			case GRANDE:
-				salle = new GrandeSalle();break;
+			case ENREGISTREMENT:
+				salle = new EnregistrementSalle();break;
 		}
 		salle.setIdSalle(rs.getInt("id_salle"));
 		salle.setDescription(rs.getString("description"));
@@ -90,8 +90,8 @@ static SalleFactory singleton;
 					salle = new PetiteSalle();break;
 				case MOYENNE:
 					salle = new MoyenneSalle();break;
-				case GRANDE:
-					salle = new GrandeSalle();break;
+				case ENREGISTREMENT:
+					salle = new EnregistrementSalle();break;
 			}
 			salle.setIdSalle(rs.getInt("id_salle"));
 			salle.setDescription(rs.getString("description"));
@@ -117,8 +117,8 @@ static SalleFactory singleton;
 					salle = new PetiteSalle();break;
 				case MOYENNE:
 					salle = new MoyenneSalle();break;
-				case GRANDE:
-					salle = new GrandeSalle();break;
+				case ENREGISTREMENT:
+					salle = new EnregistrementSalle();break;
 			}
 			salle.setIdSalle(rs.getInt("id_salle"));
 			salle.setDescription(rs.getString("description"));
@@ -128,6 +128,29 @@ static SalleFactory singleton;
 		return listSalle;
 	}
 	
+	public void update(Salle salle) throws ObjetInconnu, SQLException{
+		if(rechercherByIdSalle(salle.getIdSalle()) == null)
+			throw new ObjetInconnu(Salle.class.toString(), salle.toString());
+		
+		Salle.type type = null;
+		if(salle.getClass().equals(PetiteSalle.class)){
+			type = Salle.type.PETITE;
+		}
+		if(salle.getClass().equals(MoyenneSalle.class)){
+			type = Salle.type.MOYENNE;
+		}
+		if(salle.getClass().equals(EnregistrementSalle.class)){
+			type = Salle.type.ENREGISTREMENT;
+		}
+		
+		String query = "UPDATE salle SET description = ?, type_salle = ? WHERE id_salle = ?";
+		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+		preparedStatement.clearParameters();
+		preparedStatement.setString(1, salle.getDescription());
+		preparedStatement.setString(2, type.toString());
+		preparedStatement.setInt(3, salle.getIdSalle());
+		preparedStatement.execute();
+	}
 	
 	public void supprimer(Salle salle) throws SQLException, ObjetInconnu{
 			

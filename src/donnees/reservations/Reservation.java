@@ -1,8 +1,13 @@
 package donnees.reservations;
 
+import java.sql.SQLException;
 import java.util.Date;
 
+import donnees.Facture;
 import donnees.salles.Salle;
+import exceptions.accesAuDonnees.ObjetInconnu;
+import fabriques.donnes.FactureFactory;
+import fabriques.donnes.SalleFactory;
 
 
 public abstract class Reservation {
@@ -38,10 +43,6 @@ public abstract class Reservation {
 		this.dateFin = dateFin;
 	}
 
-	public Salle getSalle() {
-		return null;
-	}
-	
 	public int getIdReservation() {
 		return idReservation;
 	}
@@ -57,6 +58,10 @@ public abstract class Reservation {
 	public void setIdFacture(int idFacture) {
 		this.idFacture = idFacture;
 	}
+	
+	public Facture getFacture() throws ObjetInconnu, SQLException{
+		return FactureFactory.getInstance().rechercherByIdFacture(idFacture);
+	}
 
 	public int getIdSalle() {
 		return idSalle;
@@ -65,8 +70,12 @@ public abstract class Reservation {
 	public void setIdSalle(int idSalle) {
 		this.idSalle = idSalle;
 	}
+	
+	public Salle getSalle() throws ObjetInconnu, SQLException {
+		return SalleFactory.getInstance().rechercherByIdSalle(idSalle);
+	}
 
-	public abstract double getPrix();
+	public abstract double getPrix() throws ObjetInconnu, SQLException;
 
 	@Override
 	public int hashCode() {
@@ -116,7 +125,4 @@ public abstract class Reservation {
 				+ idFacture + ", idSalle=" + idSalle + ", nbHeure=" + nbHeure
 				+ ", dateDebut=" + dateDebut + ", dateFin=" + dateFin + "]";
 	}
-
-	
-	
 }
