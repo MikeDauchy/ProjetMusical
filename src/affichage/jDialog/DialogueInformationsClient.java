@@ -3,11 +3,8 @@ package affichage.jDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -19,13 +16,11 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
@@ -42,8 +37,6 @@ import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
 import fabriques.donnes.ClientFactory;
-import fabriques.donnes.ForfaitFactory;
-import fabriques.donnes.ReservationFactory;
 
 
 
@@ -59,8 +52,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 	// partie gauche de la fenetre : gestion des entrees
 	//les listes des objets
-	DefaultListModel<Client> modelListClient = new DefaultListModel<Client>();
-	JList<Client> listClients = new JList<Client>(modelListClient);
+	DefaultListModel modelListClient = new DefaultListModel();
+	JList listClients = new JList(modelListClient);
 
 
 
@@ -77,10 +70,10 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 	//partie droite de la fenetre : gestion des reservation
 	//la liste des objets
-	DefaultListModel<Reservation> modelListReservation = new DefaultListModel<Reservation>();
-	JList<Reservation> listReservations = new JList<Reservation>(modelListReservation);
-	DefaultListModel<Forfait> modelListForfait = new DefaultListModel<Forfait>();
-	JList<Forfait> listForfaits = new JList<Forfait>(modelListForfait);
+	DefaultListModel modelListReservation = new DefaultListModel();
+	JList listReservations = new JList(modelListReservation);
+	DefaultListModel modelListForfait = new DefaultListModel();
+	JList listForfaits = new JList(modelListForfait);
 
 	//les champs r�ervations
 	JTextField fieldDateR = new JTextField (20);
@@ -118,7 +111,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		}
 
 		//On met notre render Client
-		ListCellRenderer<Client> maListClientsCellRenderer = new ClientsListCellRenderer();
+		ListCellRenderer maListClientsCellRenderer = new ClientsListCellRenderer();
 		listClients.setCellRenderer(maListClientsCellRenderer);
 
 		//construction du panel de gauche
@@ -241,7 +234,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		JPanel pboutonsF = new JPanel(new GridLayout(1,0));
 		pboutonsF.add (createF);
 		pboutonsF.add (updateF);
-		pboutonsF.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));		
+		pboutonsF.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 		JPanel formF = new JPanel (new BorderLayout());
 		formF.add (lesLabelsF, BorderLayout.WEST);
@@ -293,9 +286,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		annulR.addActionListener(this);
 
 		// Ajout listSelectionListener
-		listClients.addListSelectionListener((ListSelectionListener) this);
-		listReservations.addListSelectionListener((ListSelectionListener) this);
-		listForfaits.addListSelectionListener((ListSelectionListener) this);
+		listClients.addListSelectionListener(this);
+		listReservations.addListSelectionListener(this);
+		listForfaits.addListSelectionListener(this);
 
 
 		setVisible(true);
@@ -346,23 +339,24 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 	}
 
+	@Override
 	public void valueChanged(ListSelectionEvent event) {
 		Object o= event.getSource();
 		if (o == listClients){
 			// Gestion de la JList Clients
-			
+
 			// On vide les JList reservations et forfaits
 			listReservations.removeAll();
 			listForfaits.removeAll();
-			
+
 			// On récupère le client selectionné
-			Client client = listClients.getSelectedValue();
+			Client client = (Client) listClients.getSelectedValue();
 			clientSelectionne = client;
 			fieldNom.setText(client.getNom());
 			fieldPrenom.setText(client.getPrenom());
 			fieldNumero.setText(client.getNumTel());
 			fieldPtFidelite.setText(Integer.toString((client.getPointFidelite())));
-			
+
 
 
 			try {
@@ -385,19 +379,19 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				// TODO Auto-generated catch block
 				System.out.println(e1.getMessage());
 			}
-			
+
 			//On remplit le renderer Reservation
-			ListCellRenderer<Reservation> maListReservationsCellRenderer = new ReservationsListCellRenderer();
+			ListCellRenderer maListReservationsCellRenderer = new ReservationsListCellRenderer();
 			listReservations.setCellRenderer(maListReservationsCellRenderer);
-			
+
 			//On remplit le renderer Reservation
-			ListCellRenderer<Forfait> maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
+			ListCellRenderer maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
 			listForfaits.setCellRenderer(maListForfaitsCellRenderer);
 		}else if(o==listReservations ){
 			// Gestion de la JList reservations
-			
+
 			// On récupère la reservation selectionné
-			Reservation reservation = listReservations.getSelectedValue();
+			Reservation reservation = (Reservation) listReservations.getSelectedValue();
 			reservationSelectionne = reservation;
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 			fieldDateR.setText(formatter.format(reservation.getDateDebut())+" -> "+formatter.format(reservation.getDateFin()));
@@ -406,13 +400,13 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			//fieldEtat.setText(reservation.getFacture().isEstPaye());
 		} else if(o== listForfaits) {
 			// Gestion de la JList forfaits
-			
+
 			// On récupère le forfait selectionné
-			Forfait forfait = listForfaits.getSelectedValue();
+			Forfait forfait = (Forfait) listForfaits.getSelectedValue();
 			forfaitSelectionne = forfait;
 			fieldID.setText(Integer.toString(forfait.getIdForfait()));
 			fieldID.setText(Integer.toString(forfait.getNbHeure()));
-			
+
 		}else {
 			return;
 		}
