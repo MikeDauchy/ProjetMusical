@@ -14,6 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import affichage.jDialog.DialogueConsulterReservation;
+import affichage.jDialog.DialogueInformationsClient;
+
 public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 
 	/**
@@ -30,8 +33,8 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 	private JDialog dialogInformationsClient;
 
 
-	private JButton boutonConsulterReservation = new JButton("Consulter réservation");
-	private JButton boutonEditerReservation = new JButton("Editer réservation");
+	private JButton boutonConsulterReservation = new JButton("Consulter rÃ©servation");
+	private JButton boutonEditerReservation = new JButton("Editer rÃ©servation");
 	private JButton boutonInformationsClient = new JButton(
 			"Informations client");
 

@@ -10,6 +10,9 @@ import java.awt.HeadlessException;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -19,24 +22,46 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import affichage.listCellRenderer.ClientsListCellRenderer;
+import affichage.listCellRenderer.ForfaitsListCellRenderer;
+import affichage.listCellRenderer.ReservationsListCellRenderer;
+import donnees.Client;
+import donnees.Forfait;
+import donnees.reservations.Reservation;
+import exceptions.accesAuDonnees.CreationObjetException;
+import exceptions.accesAuDonnees.ObjetExistant;
+import exceptions.accesAuDonnees.ObjetInconnu;
+import fabriques.donnes.ClientFactory;
+import fabriques.donnes.ForfaitFactory;
+import fabriques.donnes.ReservationFactory;
 
 
 
-public class DialogueInformationsClient extends JPanel implements ActionListener{
+public class DialogueInformationsClient extends JPanel implements ActionListener, ListSelectionListener{
 
 	private static final long serialVersionUID = 1L;
+
+	Client clientSelectionne;
+	Reservation reservationSelectionne;
+	Forfait forfaitSelectionne;
 
 	JDialog dialog;
 
 	// partie gauche de la fenetre : gestion des entrees
 	//les listes des objets
-	DefaultListModel modelListEntree = new DefaultListModel();
-	JList listClients = new JList (modelListEntree);
+	DefaultListModel<Client> modelListClient = new DefaultListModel<Client>();
+	JList<Client> listClients = new JList<Client>(modelListClient);
+
 
 
 	//les champs clients
@@ -51,23 +76,29 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	JButton clearC = new JButton ("Clear");
 
 	//partie droite de la fenetre : gestion des reservation
+	//la liste des objets
+	DefaultListModel<Reservation> modelListReservation = new DefaultListModel<Reservation>();
+	JList<Reservation> listReservations = new JList<Reservation>(modelListReservation);
+	DefaultListModel<Forfait> modelListForfait = new DefaultListModel<Forfait>();
+	JList<Forfait> listForfaits = new JList<Forfait>(modelListForfait);
 
-	JList listReservations =new JList();
-	JList listForfaits =new JList();
-	
 	//les champs r�ervations
-	JTextField fieldDate = new JTextField (20);
+	JTextField fieldDateR = new JTextField (20);
+	JTextField fieldExpirationR = new JTextField (20);
 	JTextField fieldHoraire = new JTextField(20);
-	JTextField fieldSalle = new JTextField(20);
-	JTextField fieldEtat = new JTextField(20);
+	JTextField fieldSalleR = new JTextField(20);
+	JTextField fieldEtatR = new JTextField(20);
 
 	// les boutons r�servations
 	JButton confR = new JButton ("Valider");
 	JButton annulR = new JButton ("Annuler");
-	
+
 	//les champs forfaits
 	JTextField fieldID = new JTextField (20);
 	JTextField fieldNbHeuresDispo = new JTextField(20);
+	JTextField fieldSalleF = new JTextField (20);
+	JTextField fieldDateDebutF = new JTextField (20);
+	JTextField fieldDateFinF = new JTextField (20);
 
 	// les boutons forfaits
 	JButton createF = new JButton ("Creer");
@@ -80,15 +111,25 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 		this.dialog = dialog;
 
+		//On charge la JList Client
+		List<Client> lesClients = ClientFactory.getInstance().lister();
+		for(Client e : lesClients){
+			modelListClient.addElement(e);
+		}
+
+		//On met notre render Client
+		ListCellRenderer<Client> maListClientsCellRenderer = new ClientsListCellRenderer();
+		listClients.setCellRenderer(maListClientsCellRenderer);
+
 		//construction du panel de gauche
 
 		//construction des text field pour saisie ou affichage
 		JLabel labelNom = new JLabel ("Nom :");
 		JLabel labelPrenom = new JLabel ("Prenom : ");
-		JLabel labelNumero = new JLabel ("Num�ro : ");
-		JLabel labelPtFidelite = new JLabel ("Points de fid�lit� : ");
-		
-		
+		JLabel labelNumero = new JLabel ("Numéro : ");
+		JLabel labelPtFidelite = new JLabel ("Points de fidélité : ");
+
+
 
 		//on met les labels et les fields dans des panels
 		JPanel lesLabelsC = new JPanel(new GridLayout (0,1));
@@ -97,14 +138,14 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		lesLabelsC.add(labelNumero);
 		lesLabelsC.add(labelPtFidelite);
 		lesLabelsC.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
-		
+
 		JPanel lesFieldsC = new JPanel(new GridLayout (0,1));
 		lesFieldsC.add (fieldNom);
 		lesFieldsC.add (fieldPrenom);
 		lesFieldsC.add(fieldNumero);
 		lesFieldsC.add(fieldPtFidelite);
 		lesFieldsC.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
-		
+
 		// construction d'un panel pour mettre les 2 boutons
 		JPanel pboutonsC = new JPanel (new GridLayout (1,0));
 		pboutonsC.add (addC);
@@ -138,52 +179,64 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		panelGauche.add (formC);
 
 		//construction du panel de droite
-		
-		//construction des text field r�servations pour saisie ou affichage
-		JLabel labelDate = new JLabel ("Date :");
-		JLabel labelHoraire = new JLabel ("Horaire :");
-		JLabel labelSalle = new JLabel ("Salle : ");
+
+		//construction des text field réservations pour saisie ou affichage
+		JLabel labelDateR = new JLabel ("Date : ");
+		JLabel labelExpirationR = new JLabel ("Expiration : ");
+		JLabel labelHoraireR = new JLabel ("Horaire : ");
+		JLabel labelSalleR = new JLabel ("Salle : ");
 		JLabel labelEtat = new JLabel ("Etat : ");
 
 		//Construction des text field forfait pour saisie ou affichage
-		JLabel labelID = new JLabel("ID : ");
+		JLabel labelIDF = new JLabel("ID : ");
 		JLabel labelNbHeuresDispo = new JLabel ("Nombre d'heures : ");
+		JLabel labelSalleF = new JLabel ("Salle : ");
+		JLabel labelDateDebutF = new JLabel ("Date début : ");
+		JLabel labelDateFinF = new JLabel ("Date fin : ");
 
 		//on met les labels et les fields r�servations dans des panels
 		JPanel lesLabelsR = new JPanel(new GridLayout (0,1));
-		lesLabelsR.add (labelDate);
-		lesLabelsR.add (labelHoraire);
-		lesLabelsR.add (labelSalle);
+		lesLabelsR.add (labelDateR);
+		lesLabelsR.add (labelExpirationR);
+		lesLabelsR.add (labelHoraireR);
+		lesLabelsR.add (labelSalleR);
 		lesLabelsR.add (labelEtat);
 		lesLabelsR.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		JPanel lesFieldsR = new JPanel(new GridLayout (0,1));
-		lesFieldsR.add (fieldDate);
+		lesFieldsR.add (fieldDateR);
+		lesFieldsR.add(fieldExpirationR);
 		lesFieldsR.add(fieldHoraire);
-		lesFieldsR.add (fieldSalle);
-		lesFieldsR.add(fieldEtat);
+		lesFieldsR.add (fieldSalleR);
+		lesFieldsR.add(fieldEtatR);
 		lesFieldsR.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 
 		//on met les labels et les fields forfaits dans des panels
 		JPanel lesLabelsF = new JPanel(new GridLayout (0,1));
-		lesLabelsF.add (labelID);
+		lesLabelsF.add (labelIDF);
 		lesLabelsF.add (labelNbHeuresDispo);
+		lesLabelsF.add(labelSalleF);
+		lesLabelsF.add (labelDateDebutF);
+		lesLabelsF.add (labelDateFinF);
 		lesLabelsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 		JPanel lesFieldsF = new JPanel(new GridLayout (0,1));
 		lesFieldsF.add (fieldID);
 		lesFieldsF.add(fieldNbHeuresDispo);
+		lesFieldsF.add(fieldSalleF);
+		lesFieldsF.add(fieldDateDebutF);
+		lesFieldsF.add(fieldDateFinF);
 		lesFieldsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
-		
+
 		// construction d'un panel pour mettre les 2 boutons r�servation
 		JPanel pboutonsR = new JPanel (new GridLayout (1,0));
 		pboutonsR.add (confR);
 		pboutonsR.add (annulR);
 		pboutonsR.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-		
+
 		JPanel formR = new JPanel (new BorderLayout());
 		formR.add (lesLabelsR, BorderLayout.WEST);
 		formR.add (lesFieldsR, BorderLayout.EAST);
 		formR.add (pboutonsR, BorderLayout.SOUTH);
-		
+
 		//construction d'un panel pour mettre les 2 boutons forfait
 		JPanel pboutonsF = new JPanel(new GridLayout(1,0));
 		pboutonsF.add (createF);
@@ -194,14 +247,14 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		formF.add (lesLabelsF, BorderLayout.WEST);
 		formF.add (lesFieldsF, BorderLayout.EAST);
 		formF.add (pboutonsF, BorderLayout.SOUTH);
-		
+
 		// Ajout ScrollPane reservations
 		JScrollPane listReservationsScrollPane = new JScrollPane (listReservations);
 		listReservationsScrollPane.setPreferredSize (new Dimension (100,100));
 		listReservationsScrollPane.setMinimumSize (new Dimension (200,200));
 		listReservationsScrollPane.setBorder (BorderFactory.createTitledBorder (
 				BorderFactory.createLineBorder (Color.cyan),
-				"R�servations"));
+				"Réservations"));
 		listReservations.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
 
 		//Ajout ScrollPane forfaits
@@ -220,31 +273,69 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		// on ajoute la liste et le formulaire
 		listReservationsScrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
 		listForfaitsScrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
+
 		panelDroite.add(listReservationsScrollPane);
 		panelDroite.add(formR);
 		panelDroite.add(listForfaitsScrollPane);
 		panelDroite.add(formF);
-			
-		// TODO: Ajouter labels + fields pour la gestion des forfaits
-		
+
+
 		//on assemble gauche et droite
 		setLayout (new BorderLayout());
 		add (panelGauche, BorderLayout.WEST);
 		add (panelDroite, BorderLayout.EAST);
+
+		// Ajout des action listener
+		addC.addActionListener(this);
+		deleteC.addActionListener(this);
+		clearC.addActionListener(this);
+		confR.addActionListener(this);
+		annulR.addActionListener(this);
+
+		// Ajout listSelectionListener
+		listClients.addListSelectionListener((ListSelectionListener) this);
+		listReservations.addListSelectionListener((ListSelectionListener) this);
+		listForfaits.addListSelectionListener((ListSelectionListener) this);
+
+
 		setVisible(true);
 
-}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o= e.getSource();
 		if(o == addC ) {
-			// Ajouter client
+			try{
+				Client client = ClientFactory.getInstance().creer(fieldNom.getText(), fieldPrenom.getText(),fieldNumero.getText(),Integer.parseInt(fieldPtFidelite.getText()));
+				modelListClient.addElement(client);
+			}catch(ObjetExistant exception){
+				JOptionPane.showMessageDialog(dialog, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (CreationObjetException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+
 		} else if(o== deleteC) {
 			// Supprimer client
+			try {
+				modelListClient.removeElement(clientSelectionne);
+				ClientFactory.getInstance().supprimer(clientSelectionne);
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			} catch (ObjetInconnu e1) {
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			}
 		} else if(o== clearC) {
 			// Nettoyer info fields client
+			ClearField();
 		} else if(o== confR) {
 			// Confirm r�servation
 		} else if(o== annulR) {
@@ -252,7 +343,94 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		}else {
 			return;
 		}
-		
+
+	}
+
+	public void valueChanged(ListSelectionEvent event) {
+		Object o= event.getSource();
+		if (o == listClients){
+			// Gestion de la JList Clients
+			
+			// On vide les JList reservations et forfaits
+			listReservations.removeAll();
+			listForfaits.removeAll();
+			
+			// On récupère le client selectionné
+			Client client = listClients.getSelectedValue();
+			clientSelectionne = client;
+			fieldNom.setText(client.getNom());
+			fieldPrenom.setText(client.getPrenom());
+			fieldNumero.setText(client.getNumTel());
+			fieldPtFidelite.setText(Integer.toString((client.getPointFidelite())));
+			
+
+
+			try {
+				//On charge la JList reservations
+				List<Reservation> lesReservations = clientSelectionne.getListReservations();
+				for(Reservation e : lesReservations){
+					modelListReservation.addElement(e);
+				}
+				//On charge la JList Forfaits
+				List<Forfait> lesForfaits = clientSelectionne.getListFofaits();
+				for(Forfait e : lesForfaits){
+					modelListForfait.addElement(e);
+				}
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("sql");
+
+			} catch (ObjetInconnu e1) {
+				// TODO Auto-generated catch block
+				System.out.println(e1.getMessage());
+			}
+			
+			//On remplit le renderer Reservation
+			ListCellRenderer<Reservation> maListReservationsCellRenderer = new ReservationsListCellRenderer();
+			listReservations.setCellRenderer(maListReservationsCellRenderer);
+			
+			//On remplit le renderer Reservation
+			ListCellRenderer<Forfait> maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
+			listForfaits.setCellRenderer(maListForfaitsCellRenderer);
+		}else if(o==listReservations ){
+			// Gestion de la JList reservations
+			
+			// On récupère la reservation selectionné
+			Reservation reservation = listReservations.getSelectedValue();
+			reservationSelectionne = reservation;
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+			fieldDateR.setText(formatter.format(reservation.getDateDebut())+" -> "+formatter.format(reservation.getDateFin()));
+			//fieldHoraire.setText(reservation.);
+			fieldSalleR.setText(Integer.toString(reservation.getIdSalle()));
+			//fieldEtat.setText(reservation.getFacture().isEstPaye());
+		} else if(o== listForfaits) {
+			// Gestion de la JList forfaits
+			
+			// On récupère le forfait selectionné
+			Forfait forfait = listForfaits.getSelectedValue();
+			forfaitSelectionne = forfait;
+			fieldID.setText(Integer.toString(forfait.getIdForfait()));
+			fieldID.setText(Integer.toString(forfait.getNbHeure()));
+			
+		}else {
+			return;
+		}
+
+
+	}
+
+	public void ClearField(){
+		fieldNom.setText("");
+		fieldPrenom.setText("");
+		fieldNumero.setText("");
+		fieldPtFidelite.setText("");
+		fieldDateR.setText("");
+		fieldHoraire.setText("");
+		fieldSalleR.setText("");
+		fieldEtatR.setText("");
+		fieldID.setText("");
+		fieldID.setText("");
 	}
 
 }

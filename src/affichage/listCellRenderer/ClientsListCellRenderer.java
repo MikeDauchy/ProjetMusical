@@ -9,7 +9,7 @@ import javax.swing.ListCellRenderer;
 
 import donnees.Client;
 
-public class ClientListCellRenderer implements ListCellRenderer{
+public class ClientsListCellRenderer implements ListCellRenderer{
 
 
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
