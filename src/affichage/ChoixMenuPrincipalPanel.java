@@ -59,12 +59,11 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 		dialogConsulterReservation.getContentPane().add(new DialogueConsulterReservation(dialogConsulterReservation), BorderLayout.CENTER);
 		dialogConsulterReservation.setLocationRelativeTo(frame);
 		dialogConsulterReservation.pack();
-		
+
 		dialogInformationsClient = new JDialog (frame, "Informations client",true);
 		dialogInformationsClient.getContentPane().add(new DialogueInformationsClient(dialogInformationsClient), BorderLayout.CENTER);
 		dialogInformationsClient.setLocationRelativeTo(frame);
 		dialogInformationsClient.pack();
-		
 
 		boutonConsulterReservation.addActionListener(this);
 		boutonInformationsClient.addActionListener(this);

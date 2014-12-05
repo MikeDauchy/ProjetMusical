@@ -37,6 +37,8 @@ import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
 import fabriques.donnes.ClientFactory;
+import fabriques.donnes.ForfaitFactory;
+import fabriques.donnes.ReservationFactory;
 
 
 
@@ -47,6 +49,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	Client clientSelectionne;
 	Reservation reservationSelectionne;
 	Forfait forfaitSelectionne;
+
+	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 
 	JDialog dialog;
 
@@ -305,14 +309,12 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			}catch(ObjetExistant exception){
 				JOptionPane.showMessageDialog(dialog, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 				e1.printStackTrace();
 			} catch (CreationObjetException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 
 
@@ -327,12 +329,44 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 		} else if(o== clearC) {
-			// Nettoyer info fields client
+			// Nettoyer information fields client
 			ClearField();
 		} else if(o== confR) {
-			// Confirm r�servation
+			// Confirm réservation
+
 		} else if(o== annulR) {
-			// Annuler r�servation
+			// Annuler réservation
+			try {
+				ReservationFactory.getInstance().supprimer(reservationSelectionne);
+				modelListReservation.removeElement(reservationSelectionne);
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+				e1.printStackTrace();
+			} catch (ObjetInconnu e1) {
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			}
+		}else if(o== createF) {
+			// Creation forfait
+			fieldID.getText();
+			fieldDateDebutF.getText();
+			fieldDateFinF.getText();
+			fieldSalleF.getText();
+			fieldNbHeuresDispo.getText();
+		}else if(o== updateF) {
+			// Mise à jour du forfait
+			try {
+				forfaitSelectionne.setIdClient(Integer.parseInt(fieldID.getText()));
+				//forfaitSelectionne.setDateDebut(fieldDateDebutF.getText());
+				//forfaitSelectionne.set
+				ForfaitFactory.getInstance().update(forfaitSelectionne);
+				modelListForfait.removeElement(forfaitSelectionne);
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+				e1.printStackTrace();
+			} catch (ObjetInconnu e1) {
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			}
+
 		}else {
 			return;
 		}
@@ -393,7 +427,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// On récupère la reservation selectionné
 			Reservation reservation = (Reservation) listReservations.getSelectedValue();
 			reservationSelectionne = reservation;
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 			fieldDateR.setText(formatter.format(reservation.getDateDebut())+" -> "+formatter.format(reservation.getDateFin()));
 			//fieldHoraire.setText(reservation.);
 			fieldSalleR.setText(Integer.toString(reservation.getIdSalle()));
@@ -410,8 +443,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		}else {
 			return;
 		}
-
-
 	}
 
 	public void ClearField(){
@@ -420,11 +451,15 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		fieldNumero.setText("");
 		fieldPtFidelite.setText("");
 		fieldDateR.setText("");
+		fieldExpirationR.setText("");
 		fieldHoraire.setText("");
 		fieldSalleR.setText("");
 		fieldEtatR.setText("");
 		fieldID.setText("");
-		fieldID.setText("");
+		fieldDateDebutF.setText("");
+		fieldDateFinF.setText("");
+		fieldSalleF.setText("");
+		fieldNbHeuresDispo.setText("");
 	}
 
 }
