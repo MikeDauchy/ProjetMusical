@@ -1,84 +1,85 @@
 package affichage.reservations.panel.sallePanel;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class SallePanel extends JPanel{
-	
+import affichage.reservations.panel.ReservationPanel.NouvelleReservationPanel;
+import affichage.reservations.panel.ReservationPanel.ReservationConfirmePanel;
+import affichage.reservations.panel.ReservationPanel.ReservationNonConfirmePanel;
+import donnees.reservations.Reservation;
+import exceptions.accesAuDonnees.ObjetInconnu;
+
+public class SallePanel extends JPanel {
+
 	private static final long serialVersionUID = 1L;
-	private JButton salleButton;
-	private JButton supprimerSalleButton;
-	
-	public SallePanel(){
+
+	Reservation reservation;
+	int heure;
+	boolean estPaye;
+
+	public SallePanel(Reservation reservation, int heure) throws ObjetInconnu,
+			SQLException {
 		super();
+		this.reservation = reservation;
+		this.heure = heure;
 		this.addMouseListener(new Listner(this));
-		this.setLayout(new  BorderLayout());
-		
-		salleButton = new JButton("Infos");
-		supprimerSalleButton = new JButton("X");
-		salleButton.setVisible(false);
-		supprimerSalleButton.setVisible(false);
-		supprimerSalleButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				salleButton.setVisible(false);
-				supprimerSalleButton.setVisible(false);
+
+		if (reservation != null) {
+			if (reservation.getFacture().isEstPaye()) {
+				this.estPaye = true;
+				this.add(new ReservationConfirmePanel(reservation));
+			} else {
+				this.add(new ReservationNonConfirmePanel(reservation));
 			}
-		});
-		this.add(salleButton, BorderLayout.CENTER);
-		this.add(supprimerSalleButton, BorderLayout.NORTH);
-		
+		}
 	}
-	
-	class Listner implements MouseListener{	
-		
+
+	class Listner implements MouseListener {
+
 		SallePanel p;
-		
+
 		public Listner(SallePanel p) {
 			super();
 			this.p = p;
-			
+
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			this.p.salleButton.setVisible(true);
-			this.p.supprimerSalleButton.setVisible(true);
-			p.validate();
-			
+			if (!p.estPaye) {
+				this.p.removeAll();
+				this.p.add(new NouvelleReservationPanel(reservation, heure));
+				p.validate();
+			}
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 	}
 
 }

@@ -1,6 +1,7 @@
 package affichage.reservations.jframe;
 
 import java.awt.GridLayout;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,11 +15,12 @@ import javax.swing.SwingConstants;
 
 import affichage.reservations.panel.HeurePanel;
 import donnees.reservations.Reservation;
+import exceptions.accesAuDonnees.ObjetInconnu;
 
 public class PanelAgenda extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	public PanelAgenda(List<Reservation> reservations, Calendar dateDeReference) {
+	public PanelAgenda(List<Reservation> reservations, Calendar dateDeReference) throws ObjetInconnu, SQLException {
 
 		super();
 		GridLayout gl = new GridLayout(16, 7);
@@ -75,7 +77,16 @@ public class PanelAgenda extends JPanel {
 				} else if (colonnes == 0 && lignes > 0) {
 					this.add(new JLabel(8 + lignes + "", SwingConstants.CENTER));
 				} else {
-					this.add(new HeurePanel());
+					
+					List<Reservation> reservationHeure = new ArrayList<Reservation>();
+					for(Reservation reservation : reservations){
+						if(dateFormat.format(reservation.getDateDebut()).equals(joursDeLaSemaine[colonnes])){
+							if(reservation.getDateDebut().getHours() == (8)+lignes || reservation.getDateDebut().getHours()+reservation.getNbHeure()-1 == (8)+lignes){
+								reservationHeure.add(reservation);
+							}
+						}
+					}
+					this.add(new HeurePanel(reservationHeure, 8+lignes));
 				}
 			}
 		}

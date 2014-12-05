@@ -37,11 +37,11 @@ public class DialogueConsulterReservation extends JPanel{
 		lundiDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		
 		Calendar dimancheDeReference = new java.util.GregorianCalendar();
-		lundiDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		lundiDeReference.add(Calendar.DATE, 7);
+		dimancheDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		dimancheDeReference.add(Calendar.DATE, 7);
 				
-//		List<Reservation> listReservation = ReservationFactory.getInstance().listerByDates(lundiDeReference.getTime(), dimancheDeReference.getTime());
-		panelAgenda = new PanelAgenda(null, lundiDeReference);
+		List<Reservation> listReservation = ReservationFactory.getInstance().listerByDates(lundiDeReference.getTime(), dimancheDeReference.getTime());
+		panelAgenda = new PanelAgenda(listReservation, lundiDeReference);
 		
 		add(labelTitre, BorderLayout.NORTH);
 		add(panelAgenda, BorderLayout.CENTER);
