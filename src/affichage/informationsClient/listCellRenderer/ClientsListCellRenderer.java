@@ -1,4 +1,4 @@
-package affichage.listCellRenderer;
+package affichage.informationsClient.listCellRenderer;
 
 import java.awt.Component;
 

@@ -1,4 +1,4 @@
-package affichage.jDialog;
+package affichage.informationsClient.jDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,9 +27,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import affichage.listCellRenderer.ClientsListCellRenderer;
-import affichage.listCellRenderer.ForfaitsListCellRenderer;
-import affichage.listCellRenderer.ReservationsListCellRenderer;
+import affichage.informationsClient.listCellRenderer.ClientsListCellRenderer;
+import affichage.informationsClient.listCellRenderer.ForfaitsListCellRenderer;
+import affichage.informationsClient.listCellRenderer.ReservationsListCellRenderer;
 import donnees.Client;
 import donnees.Forfait;
 import donnees.reservations.Reservation;
