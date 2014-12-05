@@ -12,7 +12,7 @@ public class FenetrePrincipal extends JFrame{
 
 	public FenetrePrincipal() throws Exception {
 		super();
-		setTitle("Réservation d'une salle");
+		setTitle("RÃ©servation d'une salle");
 		getContentPane().add(new ChoixMenuPrincipalPanel(this));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();

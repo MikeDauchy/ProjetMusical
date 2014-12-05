@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import affichage.jDialog.DialogueInformationsClient;
+import affichage.informationsClient.jDialog.DialogueInformationsClient;
 import affichage.reservations.jDialog.DialogueConsulterReservation;
 
 public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
@@ -88,3 +88,4 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 
 
 }
+

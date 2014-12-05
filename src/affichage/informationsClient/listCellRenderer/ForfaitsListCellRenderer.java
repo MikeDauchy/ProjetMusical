@@ -1,4 +1,4 @@
-package affichage.listCellRenderer;
+package affichage.informationsClient.listCellRenderer;
 
 import java.awt.Component;
 
@@ -8,9 +8,9 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import donnees.Client;
-import donnees.reservations.Reservation;
+import donnees.Forfait;
 
-public class ReservationsListCellRenderer implements ListCellRenderer{
+public class ForfaitsListCellRenderer implements ListCellRenderer{
 
 
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
@@ -18,9 +18,10 @@ public class ReservationsListCellRenderer implements ListCellRenderer{
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index,
 			boolean isSelected, boolean cellHasFocus) {
-		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list,((Reservation)value).getIdReservation(), index,
+		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list,((Forfait)value).getIdForfait(), index,
 				isSelected, cellHasFocus);
 		return renderer;
 	}
+
 
 }

@@ -40,8 +40,8 @@ public class DialogueConsulterReservation extends JPanel{
 		lundiDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		lundiDeReference.add(Calendar.DATE, 7);
 				
-		List<Reservation> listReservation = ReservationFactory.getInstance().listerByDates(lundiDeReference.getTime(), dimancheDeReference.getTime());
-		panelAgenda = new PanelAgenda(listReservation, lundiDeReference);
+//		List<Reservation> listReservation = ReservationFactory.getInstance().listerByDates(lundiDeReference.getTime(), dimancheDeReference.getTime());
+		panelAgenda = new PanelAgenda(null, lundiDeReference);
 		
 		add(labelTitre, BorderLayout.NORTH);
 		add(panelAgenda, BorderLayout.CENTER);
