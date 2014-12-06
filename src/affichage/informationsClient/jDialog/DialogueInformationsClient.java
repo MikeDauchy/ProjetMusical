@@ -377,6 +377,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	public void valueChanged(ListSelectionEvent event) {
 		Object o= event.getSource();
 		if (o == listClients){
+			System.out.println("action client");
 			// Gestion de la JList Clients
 
 			// On vide les JList reservations et forfaits
@@ -397,6 +398,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				//On charge la JList reservations
 				List<Reservation> lesReservations = clientSelectionne.getListReservations();
 				for(Reservation e : lesReservations){
+					System.out.println(e.getIdReservation());
 					modelListReservation.addElement(e);
 				}
 				//On charge la JList Forfaits
@@ -427,7 +429,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// On récupère la reservation selectionné
 			Reservation reservation = (Reservation) listReservations.getSelectedValue();
 			reservationSelectionne = reservation;
-			fieldDateR.setText(formatter.format(reservation.getDateDebut())+" -> "+formatter.format(reservation.getDateFin()));
+			fieldDateR.setText(formatter.format(reservation.getDateDebut()));
+			fieldExpirationR.setText(formatter.format(reservation.getDateFin()));
 			//fieldHoraire.setText(reservation.);
 			fieldSalleR.setText(Integer.toString(reservation.getIdSalle()));
 			//fieldEtat.setText(reservation.getFacture().isEstPaye());
