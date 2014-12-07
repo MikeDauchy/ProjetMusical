@@ -21,7 +21,7 @@ public class ComboBoxHeure extends JPanel {
 		comboHeures.addElement("12h");
 		comboHeures.addElement("24h");
 		combo = new JComboBox(comboHeures);
-		add(combo,BorderLayout.WEST);
+		add(combo);
 	}
 
 }

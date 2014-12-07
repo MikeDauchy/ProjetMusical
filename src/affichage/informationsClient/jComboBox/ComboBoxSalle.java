@@ -21,7 +21,7 @@ public class ComboBoxSalle extends JPanel {
 		comboSalles.addElement("Petite");
 		comboSalles.addElement("Moyenne");
 		combo = new JComboBox(comboSalles);
-		add(combo,BorderLayout.WEST);
+		add(combo);
 	}
 
 }
