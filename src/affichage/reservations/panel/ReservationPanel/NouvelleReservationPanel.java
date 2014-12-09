@@ -3,6 +3,7 @@ package affichage.reservations.panel.ReservationPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ public class NouvelleReservationPanel extends JPanel{
 	private JButton salleButton;
 	private JButton supprimerSalleButton;
 	
-	public NouvelleReservationPanel(Reservation reservation, int heure) {
+	public NouvelleReservationPanel(Reservation reservation, Date heure) {
 		
 		this.setLayout(new  BorderLayout());
 		

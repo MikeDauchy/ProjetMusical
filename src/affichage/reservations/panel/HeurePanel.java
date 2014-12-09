@@ -2,6 +2,7 @@ package affichage.reservations.panel;
 
 import java.awt.GridLayout;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -21,24 +22,24 @@ public class HeurePanel extends JPanel{
 	JPanel moyenneSallePanel;
 	JPanel enregistrementSallePanel;
 	
-	public HeurePanel(List<Reservation> reservations, int heure) throws ObjetInconnu, SQLException {
+	public HeurePanel(List<Reservation> reservations, Date jourHeure) throws ObjetInconnu, SQLException {
 		super();
 
 	    this.setLayout(new GridLayout(1, 3));
 	    
-	    petiteSallePanel = new PetiteSallePanel(null, heure);
-	    moyenneSallePanel = new MoyenneSallePanel(null, heure);
-	    enregistrementSallePanel = new EnregistrementSallePanel(null, heure);
+	    petiteSallePanel = new PetiteSallePanel(null, jourHeure);
+	    moyenneSallePanel = new MoyenneSallePanel(null, jourHeure);
+	    enregistrementSallePanel = new EnregistrementSallePanel(null, jourHeure);
 	    
 	    for(Reservation reservation : reservations){
 	    	if(reservation.getSalle().getClass().equals(PetiteSalle.class)){
-	    		petiteSallePanel = new PetiteSallePanel(reservation, heure);
+	    		petiteSallePanel = new PetiteSallePanel(reservation, jourHeure);
 	    	}
 	    	if(reservation.getSalle().getClass().equals(MoyenneSalle.class)){
-	    		moyenneSallePanel = new MoyenneSallePanel(reservation, heure);
+	    		moyenneSallePanel = new MoyenneSallePanel(reservation, jourHeure);
 	    	}
 	    	if(reservation.getSalle().getClass().equals(EnregistrementSalle.class)){
-	    		enregistrementSallePanel = new EnregistrementSallePanel(reservation, heure);
+	    		enregistrementSallePanel = new EnregistrementSallePanel(reservation, jourHeure);
 	    	}
 	    }
 	    

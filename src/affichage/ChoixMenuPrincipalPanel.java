@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import affichage.informationsClient.jDialog.DialogueInformationsClient;
-import affichage.reservations.jDialog.DialogueConsulterReservation;
+import affichage.reservations.DialogueConsulterReservation;
 
 public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 

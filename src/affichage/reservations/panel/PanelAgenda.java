@@ -1,4 +1,4 @@
-package affichage.reservations.jframe;
+package affichage.reservations.panel;
 
 import java.awt.GridLayout;
 import java.sql.SQLException;
@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import affichage.reservations.panel.HeurePanel;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
 
@@ -26,67 +25,69 @@ public class PanelAgenda extends JPanel {
 		GridLayout gl = new GridLayout(16, 7);
 		gl.setHgap(10);
 		this.setLayout(gl);
-		// On ajoute le bouton au content pane de la JFrame
-
-		// Calendar maDate = new java.util.GregorianCalendar();
-		// maDate.setTime(date);
-		// // On se positionne sur le Lundi de la semaine courante :
-		// maDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		// // Puis on ajoute 7 jours :
-		// maDate.add(Calendar.DATE, 7);
-		// maDate.getTime();
 
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL,
 				Locale.getDefault());
 		Date date;
+		Calendar[] jourDeLaSemaine = new Calendar[7];
 		// On se positionne sur le Lundi de la semaine courante :
 		dateDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		dateDeReference.add(Calendar.DATE, 1);
-
+		jourDeLaSemaine[1] = (Calendar)dateDeReference.clone();
+		
 		date = new Date(dateDeReference.getTimeInMillis());
 		String mardi = dateFormat.format(date);
 		dateDeReference.add(Calendar.DATE, 1);
+		jourDeLaSemaine[2] = (Calendar)dateDeReference.clone();
 
 		date = new Date(dateDeReference.getTimeInMillis());
 		String mercredi = dateFormat.format(date);
 		dateDeReference.add(Calendar.DATE, 1);
+		jourDeLaSemaine[3] = (Calendar)dateDeReference.clone();
 
 		date = new Date(dateDeReference.getTimeInMillis());
 		String jeudi = dateFormat.format(date);
 		dateDeReference.add(Calendar.DATE, 1);
+		jourDeLaSemaine[4] = (Calendar)dateDeReference.clone();
 
 		date = new Date(dateDeReference.getTimeInMillis());
 		String vendredi = dateFormat.format(date);
 		dateDeReference.add(Calendar.DATE, 1);
+		jourDeLaSemaine[5] = (Calendar)dateDeReference.clone();
 
 		date = new Date(dateDeReference.getTimeInMillis());
 		String samedi = dateFormat.format(date);
 		dateDeReference.add(Calendar.DATE, 1);
+		jourDeLaSemaine[6] = (Calendar)dateDeReference.clone();
 
 		date = new Date(dateDeReference.getTimeInMillis());
 		String dimanche = dateFormat.format(date);
 
-		String[] joursDeLaSemaine = { "heures", mardi, mercredi, jeudi,
+		String[] strJoursDeLaSemaine = { "heures", mardi, mercredi, jeudi,
 				vendredi, samedi, dimanche };
 
 		for (int lignes = 0; lignes != 16; lignes++) {
 			for (int colonnes = 0; colonnes != 7; colonnes++) {
 				if (lignes == 0) {
-					this.add(new JLabel(joursDeLaSemaine[colonnes],
+					this.add(new JLabel(strJoursDeLaSemaine[colonnes],
 							SwingConstants.CENTER));
 				} else if (colonnes == 0 && lignes > 0) {
 					this.add(new JLabel(8 + lignes + "", SwingConstants.CENTER));
 				} else {
-					
-					List<Reservation> reservationHeure = new ArrayList<Reservation>();
+					//on ajouter les reservations en fonction de l'heure et du jour
+					List<Reservation> reservationsHeure = new ArrayList<Reservation>();
 					for(Reservation reservation : reservations){
-						if(dateFormat.format(reservation.getDateDebut()).equals(joursDeLaSemaine[colonnes])){
+						if(dateFormat.format(reservation.getDateDebut()).equals(strJoursDeLaSemaine[colonnes])){
 							if(reservation.getDateDebut().getHours() == (8)+lignes || reservation.getDateDebut().getHours()+reservation.getNbHeure()-1 == (8)+lignes){
-								reservationHeure.add(reservation);
+								reservationsHeure.add(reservation);
 							}
 						}
 					}
-					this.add(new HeurePanel(reservationHeure, 8+lignes));
+					
+					Date jourHeure = jourDeLaSemaine[colonnes].getTime();
+					jourHeure.setHours((8)+lignes);
+					jourHeure.setMinutes(0);
+					this.add(new HeurePanel(reservationsHeure, jourHeure));
 				}
 			}
 		}

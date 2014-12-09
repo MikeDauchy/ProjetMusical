@@ -3,6 +3,7 @@ package affichage.reservations.panel.sallePanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.swing.JPanel;
 
@@ -17,14 +18,14 @@ public class SallePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	Reservation reservation;
-	int heure;
+	Date heure;
 	boolean estPaye;
 
-	public SallePanel(Reservation reservation, int heure) throws ObjetInconnu,
+	public SallePanel(Reservation reservation, Date jourHeure) throws ObjetInconnu,
 			SQLException {
 		super();
 		this.reservation = reservation;
-		this.heure = heure;
+		this.heure = jourHeure;
 		this.addMouseListener(new Listner(this));
 
 		if (reservation != null) {
