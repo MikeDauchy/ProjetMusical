@@ -1,5 +1,6 @@
 package affichage.reservations.panel.sallePanel;
 
+import java.awt.Dialog;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
@@ -22,14 +23,16 @@ public class SallePanel extends JPanel {
 	Date heure;
 	boolean estPaye;
 	Salle.type typeSalle;
+	Dialog dialog;
 
-	public SallePanel(Reservation reservation, Date jourHeure, Salle.type typeSalle) throws ObjetInconnu,
+	public SallePanel(Reservation reservation, Date jourHeure, Salle.type typeSalle, Dialog dialog) throws ObjetInconnu,
 			SQLException {
 		super();
 		this.reservation = reservation;
 		this.heure = jourHeure;
 		this.addMouseListener(new Listner(this));
 		this.typeSalle = typeSalle;
+		this.dialog = dialog;
 
 		if (reservation != null) {
 			if (reservation.getFacture().isEstPaye()) {
@@ -56,7 +59,9 @@ public class SallePanel extends JPanel {
 			if (!p.estPaye) {
 				this.p.removeAll();
 				this.p.add(new NouvelleReservationPanel(reservation, heure, typeSalle));
-				p.validate();
+				p.revalidate();
+				p.dialog.pack();
+				p.dialog.setLocationRelativeTo(null);
 			}
 		}
 

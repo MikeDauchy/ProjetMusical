@@ -1,5 +1,6 @@
 package affichage.reservations.panel;
 
+import java.awt.Dialog;
 import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -19,7 +20,7 @@ import exceptions.accesAuDonnees.ObjetInconnu;
 public class PanelAgenda extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	public PanelAgenda(List<Reservation> reservations, Calendar dateDeReference) throws ObjetInconnu, SQLException {
+	public PanelAgenda(List<Reservation> reservations, Calendar dateDeReference, Dialog dialog) throws ObjetInconnu, SQLException {
 
 		super();
 		GridLayout gl = new GridLayout(16, 7);
@@ -87,7 +88,7 @@ public class PanelAgenda extends JPanel {
 					Date jourHeure = jourDeLaSemaine[colonnes].getTime();
 					jourHeure.setHours((8)+lignes);
 					jourHeure.setMinutes(0);
-					this.add(new HeurePanel(reservationsHeure, jourHeure));
+					this.add(new HeurePanel(reservationsHeure, jourHeure, dialog));
 				}
 			}
 		}

@@ -71,7 +71,7 @@ public class DialogueConsulterReservation extends JPanel{
 		} catch (ObjetInconnu e) {
 			listReservation = new ArrayList<Reservation>();
 		}
-		panelAgenda = new PanelAgenda(listReservation, (Calendar)dateDeReference.clone());
+		panelAgenda = new PanelAgenda(listReservation, (Calendar)dateDeReference.clone(), dialog);
 		panelContenu.add(panelAgenda);
 		//
 		add(panelContenu, BorderLayout.CENTER);
@@ -128,7 +128,7 @@ public class DialogueConsulterReservation extends JPanel{
 		}
 		try {
 			panelContenu.removeAll();
-			panelAgenda = new PanelAgenda(listReservation, lundi);
+			panelAgenda = new PanelAgenda(listReservation, lundi, dialog);
 			panelContenu.add(panelAgenda);
 		} catch (ObjetInconnu e1) {
 			// TODO Auto-generated catch block
