@@ -11,6 +11,7 @@ import affichage.reservations.panel.ReservationPanel.NouvelleReservationPanel;
 import affichage.reservations.panel.ReservationPanel.ReservationConfirmePanel;
 import affichage.reservations.panel.ReservationPanel.ReservationNonConfirmePanel;
 import donnees.reservations.Reservation;
+import donnees.salles.Salle;
 import exceptions.accesAuDonnees.ObjetInconnu;
 
 public class SallePanel extends JPanel {
@@ -20,13 +21,15 @@ public class SallePanel extends JPanel {
 	Reservation reservation;
 	Date heure;
 	boolean estPaye;
+	Salle.type typeSalle;
 
-	public SallePanel(Reservation reservation, Date jourHeure) throws ObjetInconnu,
+	public SallePanel(Reservation reservation, Date jourHeure, Salle.type typeSalle) throws ObjetInconnu,
 			SQLException {
 		super();
 		this.reservation = reservation;
 		this.heure = jourHeure;
 		this.addMouseListener(new Listner(this));
+		this.typeSalle = typeSalle;
 
 		if (reservation != null) {
 			if (reservation.getFacture().isEstPaye()) {
@@ -52,7 +55,7 @@ public class SallePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			if (!p.estPaye) {
 				this.p.removeAll();
-				this.p.add(new NouvelleReservationPanel(reservation, heure));
+				this.p.add(new NouvelleReservationPanel(reservation, heure, typeSalle));
 				p.validate();
 			}
 		}

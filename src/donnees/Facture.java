@@ -26,7 +26,7 @@ public class Facture {
 	public int getIdClient() {
 		return idClient;
 	}
-	
+
 	public boolean isEstPaye() {
 		return estPaye;
 	}
@@ -39,22 +39,35 @@ public class Facture {
 		this.idClient = idClient;
 	}
 
-	public Client getClient() throws ObjetInconnu, SQLException {
-		return ClientFactory.getInstance().rechercherById(idClient);
+	public Client getClient() throws SQLException {
+		try {
+			return ClientFactory.getInstance().rechercherById(idClient);
+		} catch (ObjetInconnu e) {
+			return null;
+		}
 	}
 
 	public void setClient(Client client) {
 		this.idClient = client.getIdClient();
 	}
 
-	public List<Reservation> getListReservations() throws SQLException, ObjetInconnu {
-		return ReservationFactory.getInstance().listerByIdFacture(idFacture);
+	public List<Reservation> getListReservations() throws SQLException {
+		try {
+			return ReservationFactory.getInstance()
+					.listerByIdFacture(idFacture);
+		} catch (ObjetInconnu e) {
+			return new ArrayList<Reservation>();
+		}
 	}
 
-	public double getMontant() throws SQLException, ObjetInconnu {
+	public double getMontant() throws SQLException {
 		double montant = 0;
-		for(Reservation reservation : getListReservations()){
-			montant += reservation.getPrix();
+		try {
+			for (Reservation reservation : getListReservations()) {
+				montant += reservation.getPrix();
+			}
+		} catch (ObjetInconnu e) {
+			return montant;
 		}
 		return montant;
 	}
@@ -89,7 +102,5 @@ public class Facture {
 		return "Facture [idFacture=" + idFacture + ", idClient=" + idClient
 				+ ", estPaye=" + estPaye + "]";
 	}
-
-	
 
 }

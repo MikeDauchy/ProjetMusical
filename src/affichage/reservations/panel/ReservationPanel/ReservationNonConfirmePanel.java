@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import metier.GestionReservation;
 import donnees.Client;
 import donnees.Facture;
 import donnees.reservations.Reservation;
@@ -52,6 +53,16 @@ public class ReservationNonConfirmePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				salleButton.setVisible(false);
 				supprimerSalleButton.setVisible(false);
+				GestionReservation gestionReservation = new GestionReservation();
+				try {
+					gestionReservation.supprimerReservationSalle(reservation);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ObjetInconnu e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		this.add(salleButton, BorderLayout.CENTER);

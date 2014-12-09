@@ -220,7 +220,7 @@ public class ReservationFactory {
 		String query = "DELETE FROM reservation WHERE id_reservation = ?";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		preparedStatement.clearParameters();
-		preparedStatement.setInt(1, reservation.getIdFacture());
+		preparedStatement.setInt(1, reservation.getIdReservation());
 		preparedStatement.execute();
 	}
 	

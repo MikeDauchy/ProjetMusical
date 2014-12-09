@@ -76,6 +76,33 @@ static SalleFactory singleton;
 		return salle;
 	}
 	
+	public Salle rechercherByTypeSalle(Salle.type typeSalle) throws ObjetInconnu, SQLException{
+		Salle salle = null;
+			
+		String query = "Select id_salle, description, type_salle FROM salle WHERE type_salle = ?";
+		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
+		preparedStatement.clearParameters();
+		preparedStatement.setString(1, typeSalle.toString());
+		ResultSet rs = preparedStatement.executeQuery();
+		
+		if(!rs.next())
+			throw new ObjetInconnu(Salle.class.toString(), "avec le type de salle "+typeSalle.toString());
+		
+		
+		switch(Salle.type.valueOf(rs.getString("type_salle"))){
+			case PETITE:
+				salle = new PetiteSalle();break;
+			case MOYENNE:
+				salle = new MoyenneSalle();break;
+			case ENREGISTREMENT:
+				salle = new EnregistrementSalle();break;
+		}
+		salle.setIdSalle(rs.getInt("id_salle"));
+		salle.setDescription(rs.getString("description"));
+		
+		return salle;
+	}
+	
 	public List<Salle> lister() throws SQLException {
 		List<Salle> listSalle = new ArrayList<Salle>();
 		Salle salle = null;
