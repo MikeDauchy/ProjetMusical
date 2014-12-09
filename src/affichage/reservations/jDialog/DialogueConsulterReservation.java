@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.HeadlessException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,7 +41,12 @@ public class DialogueConsulterReservation extends JPanel{
 		dimancheDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		dimancheDeReference.add(Calendar.DATE, 7);
 				
-		List<Reservation> listReservation = ReservationFactory.getInstance().listerByDates(lundiDeReference.getTime(), dimancheDeReference.getTime());
+		List<Reservation> listReservation;
+		try {
+			listReservation = ReservationFactory.getInstance().listerByDates(lundiDeReference.getTime(), dimancheDeReference.getTime());
+		} catch (ObjetInconnu e) {
+			listReservation = new ArrayList<Reservation>();
+		}
 		panelAgenda = new PanelAgenda(listReservation, lundiDeReference);
 		
 		add(labelTitre, BorderLayout.NORTH);

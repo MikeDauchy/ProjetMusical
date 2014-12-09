@@ -8,7 +8,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,7 +18,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -37,8 +35,6 @@ import affichage.informationsClient.jComboBox.ComboBoxSalle;
 import affichage.informationsClient.listCellRenderer.ClientsListCellRenderer;
 import affichage.informationsClient.listCellRenderer.ForfaitsListCellRenderer;
 import affichage.informationsClient.listCellRenderer.ReservationsListCellRenderer;
-import affichage.reservations.panel.ReservationPanel.ReservationConfirmePanel;
-import affichage.reservations.panel.ReservationPanel.ReservationNonConfirmePanel;
 import donnees.Client;
 import donnees.Forfait;
 import donnees.reservations.Reservation;
@@ -450,40 +446,44 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			//On remplit le renderer Reservation
 			ListCellRenderer maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
 			listForfaits.setCellRenderer(maListForfaitsCellRenderer);
-		}else if(o==listReservations ){
+		}else if(o==listReservations){
 			// Gestion de la JList reservations
 
 			// On récupère la reservation selectionné
 			Reservation reservation = (Reservation) listReservations.getSelectedValue();
-			reservationSelectionne = reservation;
-			fieldDateR.setText(formatter.format(reservation.getDateDebut()));
-			fieldExpirationR.setText(formatter.format(reservation.getDateFin()));
-			//fieldHoraire.setText(reservation.);
-			try {
-				salle = reservation.getSalle();
-			} catch (ObjetInconnu e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			fieldSalleR.setText(salle.getDescription());
 			
-			try {
-				if (reservation.getFacture().isEstPaye()) {
-					fieldEtatR.setText("Validé");
-				} else {
-					fieldEtatR.setText("Non validé");;
+			//Si il y a une reservation
+			if(reservation != null){
+				reservationSelectionne = reservation;
+				fieldDateR.setText(formatter.format(reservation.getDateDebut()));
+				fieldExpirationR.setText(formatter.format(reservation.getDateFin()));
+				//fieldHoraire.setText(reservation.);
+				try {
+					salle = reservation.getSalle();
+				} catch (ObjetInconnu e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (ObjetInconnu e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				fieldSalleR.setText(salle.getDescription());
+				
+				try {
+					if (reservation.getFacture().isEstPaye()) {
+						fieldEtatR.setText("Validé");
+					} else {
+						fieldEtatR.setText("Non validé");;
+					}
+				} catch (ObjetInconnu e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//fieldEtat.setText(reservation.getFacture().isEstPaye());
 			}
-			//fieldEtat.setText(reservation.getFacture().isEstPaye());
 		} else if(o== listForfaits) {
 			// Gestion de la JList forfaits
 
