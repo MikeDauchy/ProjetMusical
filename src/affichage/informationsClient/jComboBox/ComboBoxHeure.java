@@ -32,5 +32,9 @@ public class ComboBoxHeure extends JPanel{
 	public int getTextComboBoxHeure(){
 		return Integer.parseInt(textComboBoxHeure=combo.getSelectedItem().toString());
 	}
+	
+	public void SelectItem(String value){
+		combo.getSelectedItem().equals(value);
+	}
 
 }

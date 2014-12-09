@@ -31,5 +31,9 @@ public class ComboBoxSalle extends JPanel {
 	public String getTextComboBoxSalle(){
 		return combo.getSelectedItem().toString();
 	}
+	
+	public void SelectItem(String value){
+		combo.setSelectedItem(value);
+	}
 
 }
