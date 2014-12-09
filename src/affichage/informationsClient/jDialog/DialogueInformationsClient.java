@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -99,13 +100,13 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	JButton annulR = new JButton ("Annuler");
 
 	//les champs forfaits
-	JTextField fieldID = new JTextField (20);
 	JTextField fieldNbHeuresDispo = new JTextField(20);
 	JTextField fieldDateDebutF = new JTextField (20);
+	JTextField fieldCreditF = new JTextField (20);
 	JTextField fieldDateFinF = new JTextField (20);
 	ComboBoxSalle comboBoxSalle = new ComboBoxSalle();
 	ComboBoxHeure comboBoxHeure = new ComboBoxHeure();
- 	
+
 
 	// les boutons forfaits
 	JButton createF = new JButton ("Creer");
@@ -195,9 +196,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		JLabel labelEtat = new JLabel ("Etat : ");
 
 		//Construction des text field forfait pour saisie ou affichage
-		JLabel labelIDF = new JLabel("ID : ");
 		JLabel labelNbHeuresDispo = new JLabel ("Nombre d'heures : ");
 		JLabel labelSalleF = new JLabel ("Salle : ");
+		JLabel labelCreditF = new JLabel("Credit : ");
 		JLabel labelDateDebutF = new JLabel ("Date début : ");
 		JLabel labelDateFinF = new JLabel ("Date fin : ");
 
@@ -219,16 +220,16 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 		//on met les labels et les fields forfaits dans des panels
 		JPanel lesLabelsF = new JPanel(new GridLayout (0,1));
-		lesLabelsF.add (labelIDF);
 		lesLabelsF.add (labelNbHeuresDispo);
 		lesLabelsF.add(labelSalleF);
+		lesLabelsF.add (labelCreditF);
 		lesLabelsF.add (labelDateDebutF);
 		lesLabelsF.add (labelDateFinF);
 		lesLabelsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 		JPanel lesFieldsF = new JPanel(new GridLayout (0,1));
-		lesFieldsF.add (fieldID);
 		lesFieldsF.add(comboBoxHeure);
 		lesFieldsF.add(comboBoxSalle);
+		lesFieldsF.add (fieldCreditF);
 		lesFieldsF.add(fieldDateDebutF);
 		lesFieldsF.add(fieldDateFinF);
 		lesFieldsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
@@ -359,8 +360,14 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			}
 		}else if(o== createF) {
 			// Creation forfait
+			Date dateDebut;
+			Date dateFin;
+			dateDebut = cal.getTime();
+
+			cal.add(Calendar.MONTH, 3);
+			dateFin = cal.getTime();
 			try {
-				Forfait forfait =ForfaitFactory.getInstance().creer(clientSelectionne.getIdClient(),comboBoxHeure.getTextComboBoxHeure(), cal.getTime(), cal.getTime(), 0);
+				Forfait forfait =ForfaitFactory.getInstance().creer(clientSelectionne.getIdClient(),comboBoxHeure.getTextComboBoxHeure(), dateDebut, dateFin, 0);
 				modelListForfait.addElement(forfait);
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
@@ -405,7 +412,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	public void valueChanged(ListSelectionEvent event) {
 		Object o= event.getSource();
 		if (o == listClients){
-			System.out.println("action client");
 			// Gestion de la JList Clients
 			ClearReservation();
 			ClearForfait();
@@ -451,13 +457,13 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 			// On récupère la reservation selectionné
 			Reservation reservation = (Reservation) listReservations.getSelectedValue();
-			
+
 			//Si il y a une reservation
 			if(reservation != null){
 				reservationSelectionne = reservation;
 				fieldDateR.setText(formatter.format(reservation.getDateDebut()));
 				fieldExpirationR.setText(formatter.format(reservation.getDateFin()));
-				//fieldHoraire.setText(reservation.);
+				fieldHoraire.setText(Integer.toString(reservation.getDateDebut().getHours())+"h -> "+Integer.toString(reservation.getDateFin().getHours())+"h" );
 				try {
 					salle = reservation.getSalle();
 				} catch (ObjetInconnu e) {
@@ -468,7 +474,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 					e.printStackTrace();
 				}
 				fieldSalleR.setText(salle.getDescription());
-				
+
 				try {
 					if (reservation.getFacture().isEstPaye()) {
 						fieldEtatR.setText("Validé");
@@ -482,18 +488,19 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//fieldEtat.setText(reservation.getFacture().isEstPaye());
 			}
 		} else if(o== listForfaits) {
 			// Gestion de la JList forfaits
 
 			// On récupère le forfait selectionné
 			Forfait forfait = (Forfait) listForfaits.getSelectedValue();
-			forfaitSelectionne = forfait;
-			//fieldID.setText(Integer.toString(forfait.getIdForfait()));
-			fieldDateDebutF.setText(formatter.format(forfait.getDateDebut()));
-			fieldDateFinF.setText(formatter.format(forfait.getDateFin()));
-
+			if(forfait !=null){
+				forfaitSelectionne = forfait;
+				comboBoxHeure.SelectItem(Integer.toString(forfaitSelectionne.getNbHeure()));
+				fieldCreditF.setText(Integer.toString(forfaitSelectionne.getNbHeure())+"h");
+				fieldDateDebutF.setText(formatter.format(forfaitSelectionne.getDateDebut()));
+				fieldDateFinF.setText(formatter.format(forfaitSelectionne.getDateFin()));
+			}
 		}else {
 			return;
 		}
@@ -509,12 +516,12 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		fieldHoraire.setText("");
 		fieldSalleR.setText("");
 		fieldEtatR.setText("");
-		fieldID.setText("");
+		fieldCreditF.setText("");
 		fieldDateDebutF.setText("");
 		fieldDateFinF.setText("");
 		fieldNbHeuresDispo.setText("");
 	}
-	
+
 	public void ClearReservation(){
 		// On vide les JList reservations
 		listReservations.removeAll();
@@ -526,13 +533,13 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		fieldSalleR.setText("");
 		fieldEtatR.setText("");
 	}
-	
+
 	public void ClearForfait(){
 		// On vide les JList forfaits
 		listForfaits.removeAll();
 		modelListForfait.removeAllElements();
 		// On vide les JTextField forfaits
-		fieldID.setText("");
+		fieldCreditF.setText("");
 		fieldDateDebutF.setText("");
 		fieldDateFinF.setText("");
 		fieldNbHeuresDispo.setText("");
