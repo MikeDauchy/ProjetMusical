@@ -8,7 +8,11 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -33,9 +37,12 @@ import affichage.informationsClient.jComboBox.ComboBoxSalle;
 import affichage.informationsClient.listCellRenderer.ClientsListCellRenderer;
 import affichage.informationsClient.listCellRenderer.ForfaitsListCellRenderer;
 import affichage.informationsClient.listCellRenderer.ReservationsListCellRenderer;
+import affichage.reservations.panel.ReservationPanel.ReservationConfirmePanel;
+import affichage.reservations.panel.ReservationPanel.ReservationNonConfirmePanel;
 import donnees.Client;
 import donnees.Forfait;
 import donnees.reservations.Reservation;
+import donnees.salles.Salle;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
@@ -52,6 +59,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	Client clientSelectionne;
 	Reservation reservationSelectionne;
 	Forfait forfaitSelectionne;
+	Salle salle;
+	Calendar cal = GregorianCalendar.getInstance();
 
 	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 
@@ -293,6 +302,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		clearC.addActionListener(this);
 		confR.addActionListener(this);
 		annulR.addActionListener(this);
+		createF.addActionListener(this);
+		updateF.addActionListener(this);
 
 		// Ajout listSelectionListener
 		listClients.addListSelectionListener(this);
@@ -352,23 +363,40 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			}
 		}else if(o== createF) {
 			// Creation forfait
-			fieldID.getText();
-			fieldDateDebutF.getText();
-			fieldDateFinF.getText();
-			fieldNbHeuresDispo.getText();
+			try {
+				Forfait forfait =ForfaitFactory.getInstance().creer(clientSelectionne.getIdClient(),comboBoxHeure.getTextComboBoxHeure(), cal.getTime(), cal.getTime(), 0);
+				modelListForfait.addElement(forfait);
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (CreationObjetException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ObjetExistant e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}else if(o== updateF) {
 			// Mise à jour du forfait
 			try {
-				forfaitSelectionne.setIdClient(Integer.parseInt(fieldID.getText()));
-				//forfaitSelectionne.setDateDebut(fieldDateDebutF.getText());
-				//forfaitSelectionne.set
-				ForfaitFactory.getInstance().update(forfaitSelectionne);
 				modelListForfait.removeElement(forfaitSelectionne);
+				forfaitSelectionne.setIdClient(forfaitSelectionne.getIdForfait());
+				forfaitSelectionne.setDateDebut(formatter.parse(fieldDateDebutF.getText()));
+				forfaitSelectionne.setDateDebut(formatter.parse(fieldDateDebutF.getText()));
+				forfaitSelectionne.setNbHeure(comboBoxHeure.getTextComboBoxHeure());
+				ForfaitFactory.getInstance().update(forfaitSelectionne);
+				modelListForfait.addElement(forfaitSelectionne);
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 				e1.printStackTrace();
 			} catch (ObjetInconnu e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 
 		}else {
@@ -392,8 +420,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			fieldPrenom.setText(client.getPrenom());
 			fieldNumero.setText(client.getNumTel());
 			fieldPtFidelite.setText(Integer.toString((client.getPointFidelite())));
-
-
 
 			try {
 				//On charge la JList reservations
@@ -430,10 +456,33 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// On récupère la reservation selectionné
 			Reservation reservation = (Reservation) listReservations.getSelectedValue();
 			reservationSelectionne = reservation;
-			fieldDateR.setText(/*formatter.format(reservation.getDateDebut())*/"");
-			fieldExpirationR.setText(/*formatter.format(reservation.getDateFin())*/"");
+			fieldDateR.setText(formatter.format(reservation.getDateDebut()));
+			fieldExpirationR.setText(formatter.format(reservation.getDateFin()));
 			//fieldHoraire.setText(reservation.);
-			fieldSalleR.setText(/*Integer.toString(reservation.getIdSalle())*/"");
+			try {
+				salle = reservation.getSalle();
+			} catch (ObjetInconnu e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			fieldSalleR.setText(salle.getDescription());
+			
+			try {
+				if (reservation.getFacture().isEstPaye()) {
+					fieldEtatR.setText("Validé");
+				} else {
+					fieldEtatR.setText("Non validé");;
+				}
+			} catch (ObjetInconnu e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			//fieldEtat.setText(reservation.getFacture().isEstPaye());
 		} else if(o== listForfaits) {
 			// Gestion de la JList forfaits
@@ -441,8 +490,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// On récupère le forfait selectionné
 			Forfait forfait = (Forfait) listForfaits.getSelectedValue();
 			forfaitSelectionne = forfait;
-			fieldID.setText(Integer.toString(forfait.getIdForfait()));
-			fieldID.setText(Integer.toString(forfait.getNbHeure()));
+			//fieldID.setText(Integer.toString(forfait.getIdForfait()));
+			fieldDateDebutF.setText(formatter.format(forfait.getDateDebut()));
+			fieldDateFinF.setText(formatter.format(forfait.getDateFin()));
 
 		}else {
 			return;
