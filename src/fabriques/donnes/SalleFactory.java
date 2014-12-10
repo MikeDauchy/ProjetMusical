@@ -64,11 +64,14 @@ static SalleFactory singleton;
 		
 		switch(Salle.type.valueOf(rs.getString("type_salle"))){
 			case PETITE:
-				salle = new PetiteSalle();break;
+				salle = new PetiteSalle();
+				salle.setTypeSalle(Salle.type.PETITE);break;
 			case MOYENNE:
-				salle = new MoyenneSalle();break;
+				salle = new MoyenneSalle();
+				salle.setTypeSalle(Salle.type.MOYENNE);break;
 			case ENREGISTREMENT:
-				salle = new EnregistrementSalle();break;
+				salle = new EnregistrementSalle();
+				salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
 		}
 		salle.setIdSalle(rs.getInt("id_salle"));
 		salle.setDescription(rs.getString("description"));
@@ -91,11 +94,14 @@ static SalleFactory singleton;
 		
 		switch(Salle.type.valueOf(rs.getString("type_salle"))){
 			case PETITE:
-				salle = new PetiteSalle();break;
+				salle = new PetiteSalle();
+				salle.setTypeSalle(Salle.type.PETITE);break;
 			case MOYENNE:
-				salle = new MoyenneSalle();break;
+				salle = new MoyenneSalle();
+				salle.setTypeSalle(Salle.type.MOYENNE);break;
 			case ENREGISTREMENT:
-				salle = new EnregistrementSalle();break;
+				salle = new EnregistrementSalle();
+				salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
 		}
 		salle.setIdSalle(rs.getInt("id_salle"));
 		salle.setDescription(rs.getString("description"));
@@ -114,11 +120,14 @@ static SalleFactory singleton;
 		while(rs.next()){
 			switch(Salle.type.valueOf(rs.getString("type_salle"))){
 				case PETITE:
-					salle = new PetiteSalle();break;
+					salle = new PetiteSalle();
+					salle.setTypeSalle(Salle.type.PETITE);break;
 				case MOYENNE:
-					salle = new MoyenneSalle();break;
+					salle = new MoyenneSalle();
+					salle.setTypeSalle(Salle.type.MOYENNE);break;
 				case ENREGISTREMENT:
-					salle = new EnregistrementSalle();break;
+					salle = new EnregistrementSalle();
+					salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
 			}
 			salle.setIdSalle(rs.getInt("id_salle"));
 			salle.setDescription(rs.getString("description"));
@@ -141,11 +150,14 @@ static SalleFactory singleton;
 		while(rs.next()){
 			switch(Salle.type.valueOf(rs.getString("type_salle"))){
 				case PETITE:
-					salle = new PetiteSalle();break;
+					salle = new PetiteSalle();
+					salle.setTypeSalle(Salle.type.PETITE);break;
 				case MOYENNE:
-					salle = new MoyenneSalle();break;
+					salle = new MoyenneSalle();
+					salle.setTypeSalle(Salle.type.MOYENNE);break;
 				case ENREGISTREMENT:
-					salle = new EnregistrementSalle();break;
+					salle = new EnregistrementSalle();
+					salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
 			}
 			salle.setIdSalle(rs.getInt("id_salle"));
 			salle.setDescription(rs.getString("description"));

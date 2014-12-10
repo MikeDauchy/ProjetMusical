@@ -15,7 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import donnees.reservations.Reservation;
+import donnees.salles.Salle;
 import exceptions.accesAuDonnees.ObjetInconnu;
+import fabriques.donnes.SalleFactory;
 
 public class PanelAgenda extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -23,72 +25,48 @@ public class PanelAgenda extends JPanel {
 	public PanelAgenda(List<Reservation> reservations, Calendar dateDeReference, Dialog dialog) throws ObjetInconnu, SQLException {
 
 		super();
-		GridLayout gl = new GridLayout(16, 7);
+		
+		List<Salle> salles = SalleFactory.getInstance().lister();
+		
+		GridLayout gl = new GridLayout(16, salles.size());
 		gl.setHgap(10);
 		this.setLayout(gl);
 
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL,
 				Locale.getDefault());
-		Date date;
-		Calendar[] jourDeLaSemaine = new Calendar[7];
-		// On se positionne sur le Lundi de la semaine courante :
-		dateDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		dateDeReference.add(Calendar.DATE, 1);
-		jourDeLaSemaine[1] = (Calendar)dateDeReference.clone();
+
 		
-		date = new Date(dateDeReference.getTimeInMillis());
-		String mardi = dateFormat.format(date);
-		dateDeReference.add(Calendar.DATE, 1);
-		jourDeLaSemaine[2] = (Calendar)dateDeReference.clone();
-
-		date = new Date(dateDeReference.getTimeInMillis());
-		String mercredi = dateFormat.format(date);
-		dateDeReference.add(Calendar.DATE, 1);
-		jourDeLaSemaine[3] = (Calendar)dateDeReference.clone();
-
-		date = new Date(dateDeReference.getTimeInMillis());
-		String jeudi = dateFormat.format(date);
-		dateDeReference.add(Calendar.DATE, 1);
-		jourDeLaSemaine[4] = (Calendar)dateDeReference.clone();
-
-		date = new Date(dateDeReference.getTimeInMillis());
-		String vendredi = dateFormat.format(date);
-		dateDeReference.add(Calendar.DATE, 1);
-		jourDeLaSemaine[5] = (Calendar)dateDeReference.clone();
-
-		date = new Date(dateDeReference.getTimeInMillis());
-		String samedi = dateFormat.format(date);
-		dateDeReference.add(Calendar.DATE, 1);
-		jourDeLaSemaine[6] = (Calendar)dateDeReference.clone();
-
-		date = new Date(dateDeReference.getTimeInMillis());
-		String dimanche = dateFormat.format(date);
-
-		String[] strJoursDeLaSemaine = { "heures", mardi, mercredi, jeudi,
-				vendredi, samedi, dimanche };
+		List<String> strNomSalle = new ArrayList<String>();
+		strNomSalle.add("heures");
+		for(Salle salle : salles){
+			strNomSalle.add(salle.getDescription()+" "+salle.getTypeSalle());
+		}
 
 		for (int lignes = 0; lignes != 16; lignes++) {
-			for (int colonnes = 0; colonnes != 7; colonnes++) {
+			for (int colonnes = 0; colonnes != strNomSalle.size(); colonnes++) {
 				if (lignes == 0) {
-					this.add(new JLabel(strJoursDeLaSemaine[colonnes],
+					this.add(new JLabel(strNomSalle.get(colonnes),
 							SwingConstants.CENTER));
 				} else if (colonnes == 0 && lignes > 0) {
 					this.add(new JLabel(8 + lignes + "", SwingConstants.CENTER));
 				} else {
 					//on ajouter les reservations en fonction de l'heure et du jour
-					List<Reservation> reservationsHeure = new ArrayList<Reservation>();
+					Reservation reservationsHeure = null;
+					Salle salle = salles.get(colonnes - 1);
 					for(Reservation reservation : reservations){
-						if(dateFormat.format(reservation.getDateDebut()).equals(strJoursDeLaSemaine[colonnes])){
-							if(reservation.getDateDebut().getHours() == (8)+lignes || reservation.getDateDebut().getHours()+reservation.getNbHeure()-1 == (8)+lignes){
-								reservationsHeure.add(reservation);
+						if(dateFormat.format(reservation.getDateDebut()).equals(dateFormat.format(dateDeReference.getTime()))){
+							if(reservation.getIdSalle() == salle.getIdSalle() && (reservation.getDateDebut().getHours() == (8)+lignes || reservation.getDateDebut().getHours()+reservation.getNbHeure()-1 == (8)+lignes)){
+								reservationsHeure = reservation;
 							}
 						}
 					}
 					
-					Date jourHeure = jourDeLaSemaine[colonnes].getTime();
+					Date jourHeure = dateDeReference.getTime();
 					jourHeure.setHours((8)+lignes);
 					jourHeure.setMinutes(0);
-					this.add(new HeurePanel(reservationsHeure, jourHeure, dialog));
+					
+					
+					this.add(new HeurePanel(reservationsHeure, jourHeure, dialog, salle.getTypeSalle()));
 				}
 			}
 		}
