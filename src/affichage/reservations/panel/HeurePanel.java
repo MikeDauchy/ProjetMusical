@@ -4,7 +4,6 @@ import java.awt.Dialog;
 import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -12,41 +11,29 @@ import affichage.reservations.panel.sallePanel.EnregistrementSallePanel;
 import affichage.reservations.panel.sallePanel.MoyenneSallePanel;
 import affichage.reservations.panel.sallePanel.PetiteSallePanel;
 import donnees.reservations.Reservation;
-import donnees.salles.EnregistrementSalle;
-import donnees.salles.MoyenneSalle;
-import donnees.salles.PetiteSalle;
+import donnees.salles.Salle;
 import exceptions.accesAuDonnees.ObjetInconnu;
 
 public class HeurePanel extends JPanel{
 
-	JPanel petiteSallePanel;
-	JPanel moyenneSallePanel;
-	JPanel enregistrementSallePanel;
+	JPanel sallePanel;
 	
-	public HeurePanel(List<Reservation> reservations, Date jourHeure, Dialog dialog) throws ObjetInconnu, SQLException {
+	public HeurePanel(Reservation reservationsHeure, Date jourHeure, Dialog dialog, Salle.type typeSalle) throws ObjetInconnu, SQLException {
 		super();
 
 	    this.setLayout(new GridLayout(1, 3));
 	    
-	    petiteSallePanel = new PetiteSallePanel(null, jourHeure, dialog);
-	    moyenneSallePanel = new MoyenneSallePanel(null, jourHeure, dialog);
-	    enregistrementSallePanel = new EnregistrementSallePanel(null, jourHeure, dialog);
 	    
-	    for(Reservation reservation : reservations){
-	    	if(reservation.getSalle().getClass().equals(PetiteSalle.class)){
-	    		petiteSallePanel = new PetiteSallePanel(reservation, jourHeure, dialog);
-	    	}
-	    	if(reservation.getSalle().getClass().equals(MoyenneSalle.class)){
-	    		moyenneSallePanel = new MoyenneSallePanel(reservation, jourHeure, dialog);
-	    	}
-	    	if(reservation.getSalle().getClass().equals(EnregistrementSalle.class)){
-	    		enregistrementSallePanel = new EnregistrementSallePanel(reservation, jourHeure, dialog);
-	    	}
+	    switch(typeSalle){
+	    	case PETITE:
+	    		sallePanel = new PetiteSallePanel(reservationsHeure, jourHeure, dialog);break;
+	    	case MOYENNE:
+	    		sallePanel = new MoyenneSallePanel(reservationsHeure, jourHeure, dialog);break;
+	    	case ENREGISTREMENT:
+	    		sallePanel = new EnregistrementSallePanel(reservationsHeure, jourHeure, dialog);break;
+	    
 	    }
-	    
-	    add(petiteSallePanel);
-	    add(moyenneSallePanel);
-	    add(enregistrementSallePanel);
+	    add(sallePanel);
 	}
 
 }

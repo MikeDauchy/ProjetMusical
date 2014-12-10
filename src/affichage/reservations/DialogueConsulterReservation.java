@@ -8,9 +8,11 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -29,13 +31,16 @@ public class DialogueConsulterReservation extends JPanel{
 
 	private Dialog dialog;
 
-	JButton btnSemainePrec = new JButton("Semaine précédente");
-	JButton btnSemaineSuiv = new JButton("Semaine suivante");
+	JButton btnJourPrec = new JButton("Jour précédent");
+	JButton btnJourSuiv = new JButton("Jour suivant");
 	
 	JLabel labelTitre = new JLabel("Consultation des reservations", SwingConstants.CENTER);
 	JPanel panelEnTete = new JPanel();
 	JPanel panelContenu = new JPanel();
 	JPanel panelAgenda;
+	
+	DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL,
+			Locale.getDefault());
 	
 	Calendar dateDeReference;
 
@@ -44,26 +49,25 @@ public class DialogueConsulterReservation extends JPanel{
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
 		
+		dateDeReference = new java.util.GregorianCalendar();
 		
 		//creation de l'entete
 		creationListenerBtnPrec();
 		creationListenerBtnSuiv();
+		labelTitre.setText(dateFormat.format(dateDeReference.getTime()));
 		labelTitre.setForeground(Color.blue);
 		panelEnTete.setLayout(new GridLayout(1, 3));
-		panelEnTete.add(btnSemainePrec);
+		panelEnTete.add(btnJourPrec);
 		panelEnTete.add(labelTitre);
-		panelEnTete.add(btnSemaineSuiv);
+		panelEnTete.add(btnJourSuiv);
 		//
 		add(panelEnTete, BorderLayout.NORTH);
 		
 		
 		
 		//Chargement du contenu du planning
-		dateDeReference = new java.util.GregorianCalendar();
-		dateDeReference.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		
 		Calendar dimancheDeReference = new java.util.GregorianCalendar();
-		dimancheDeReference.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		dimancheDeReference.add(Calendar.DATE, 1);
 				
 		List<Reservation> listReservation;
 		try {
@@ -89,33 +93,33 @@ public class DialogueConsulterReservation extends JPanel{
 	}
 	
 	private void creationListenerBtnPrec(){
-		btnSemainePrec.addActionListener(new ActionListener() {
+		btnJourPrec.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ajouterSemaineAgenda(-1);
+				ajouterJourAgenda(-1);
 			}
 		});
 	}
 	
 	private void creationListenerBtnSuiv(){
-		btnSemaineSuiv.addActionListener(new ActionListener() {
+		btnJourSuiv.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ajouterSemaineAgenda(1);
+				ajouterJourAgenda(1);
 			}
 		});
 	}
 	
-	private void ajouterSemaineAgenda(int nbSemaine){
+	private void ajouterJourAgenda(int nbJour){
 		//Chargement du contenu du planning
-		dateDeReference.add(Calendar.DATE, nbSemaine*7);
+		dateDeReference.add(Calendar.DATE, nbJour*1);
 		
 		Calendar lundi = (Calendar)dateDeReference.clone();
 		
 		Calendar dimanche = (Calendar)dateDeReference.clone();
-		dimanche.add(Calendar.DATE, 7);
+		dimanche.add(Calendar.DATE, 1);
 				
 		List<Reservation> listReservation = null;
 		try {
@@ -138,6 +142,7 @@ public class DialogueConsulterReservation extends JPanel{
 			e1.printStackTrace();
 		}
 		//
+		labelTitre.setText(dateFormat.format(dateDeReference.getTime()));
 		recompacter();
 	}
 

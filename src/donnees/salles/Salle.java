@@ -5,11 +5,20 @@ public abstract class Salle {
 	
 	protected String description;
 	protected int idSalle;
+	protected Salle.type typeSalle;
 	
 	public enum type {
 		PETITE, MOYENNE, ENREGISTREMENT
 	}
 	
+	public Salle.type getTypeSalle() {
+		return typeSalle;
+	}
+
+	public void setTypeSalle(Salle.type typeSalle) {
+		this.typeSalle = typeSalle;
+	}
+
 	public int getIdSalle() {
 		return idSalle;
 	}
