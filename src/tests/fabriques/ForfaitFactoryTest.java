@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import donnees.Forfait;
+import donnees.salles.Salle;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
@@ -40,6 +41,7 @@ public class ForfaitFactoryTest {
 		mokeForfait.setDateDebut(dateDebut);
 		mokeForfait.setDateFin(dateFin);
 		mokeForfait.setMontant(80);
+		mokeForfait.setTypeSalle(Salle.type.MOYENNE);
 		
 		listMokeForfait.add(mokeForfait);
 	}
@@ -54,7 +56,7 @@ public class ForfaitFactoryTest {
 	@Test
 	public void testGlobal() throws CreationObjetException, ObjetExistant, SQLException, ObjetInconnu {
 		
-		Forfait forfait = ForfaitFactory.getInstance().creer(-2, 12, dateDebut, dateFin, 80);
+		Forfait forfait = ForfaitFactory.getInstance().creer(-2, 12, dateDebut, dateFin, 80, Salle.type.MOYENNE);
 		assertEquals(mokeForfait, forfait);
 		
 		assertEquals(ForfaitFactory.getInstance().rechercherByIdForfait(forfait.getIdForfait()), mokeForfait);

@@ -194,13 +194,26 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		JLabel labelHoraireR = new JLabel ("Horaire : ");
 		JLabel labelSalleR = new JLabel ("Salle : ");
 		JLabel labelEtat = new JLabel ("Etat : ");
-
+		
+		//mise en place de l'interdiction d'ecriture dans les jtextfield de reservations
+		fieldDateR.setEditable(false);
+		fieldExpirationR.setEditable(false);
+		fieldHoraire.setEditable(false);
+		fieldSalleR.setEditable(false);
+		fieldEtatR.setEditable(false);
+		
 		//Construction des text field forfait pour saisie ou affichage
 		JLabel labelNbHeuresDispo = new JLabel ("Nombre d'heures : ");
 		JLabel labelSalleF = new JLabel ("Salle : ");
 		JLabel labelCreditF = new JLabel("Credit : ");
 		JLabel labelDateDebutF = new JLabel ("Date début : ");
 		JLabel labelDateFinF = new JLabel ("Date fin : ");
+		
+		
+		fieldNbHeuresDispo.setEditable(false);
+		fieldDateDebutF.setEditable(false);
+		fieldCreditF.setEditable(false);
+		fieldDateFinF.setEditable(false);
 
 		//on met les labels et les fields r�servations dans des panels
 		JPanel lesLabelsR = new JPanel(new GridLayout (0,1));
@@ -367,7 +380,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			cal.add(Calendar.MONTH, 3);
 			dateFin = cal.getTime();
 			try {
-				Forfait forfait =ForfaitFactory.getInstance().creer(clientSelectionne.getIdClient(),comboBoxHeure.getTextComboBoxHeure(), dateDebut, dateFin, 0);
+				Forfait forfait =ForfaitFactory.getInstance().creer(clientSelectionne.getIdClient(),comboBoxHeure.getTextComboBoxHeure(), dateDebut, dateFin, 0.0, Salle.type.valueOf(comboBoxSalle.getTextComboBoxSalle()));
 				modelListForfait.addElement(forfait);
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
@@ -386,7 +399,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// Mise à jour du forfait
 			try {
 				modelListForfait.removeElement(forfaitSelectionne);
-				forfaitSelectionne.setIdClient(forfaitSelectionne.getIdForfait());
+				forfaitSelectionne.setIdClient(forfaitSelectionne.getIdClient());
 				forfaitSelectionne.setDateDebut(formatter.parse(fieldDateDebutF.getText()));
 				forfaitSelectionne.setDateDebut(formatter.parse(fieldDateDebutF.getText()));
 				forfaitSelectionne.setNbHeure(comboBoxHeure.getTextComboBoxHeure());
@@ -427,23 +440,31 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				//On charge la JList reservations
 				List<Reservation> lesReservations = clientSelectionne.getListReservations();
 				for(Reservation e : lesReservations){
-					System.out.println(e.getIdReservation());
 					modelListReservation.addElement(e);
 				}
-				//On charge la JList Forfaits
-				List<Forfait> lesForfaits = clientSelectionne.getListFofaits();
-				for(Forfait e : lesForfaits){
-					modelListForfait.addElement(e);
-				}
-
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				System.out.println("sql");
 
 			} catch (ObjetInconnu e1) {
 				// TODO Auto-generated catch block
-				System.out.println(e1.getMessage());
+//				System.out.println(e1.getMessage());
 			}
+			try{
+				//On charge la JList Forfaits
+				List<Forfait> lesForfaits = clientSelectionne.getListFofaits();
+				for(Forfait e : lesForfaits){
+					modelListForfait.addElement(e);
+				}
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("sql");
+
+			} catch (ObjetInconnu e1) {
+				// TODO Auto-generated catch block
+//				System.out.println(e1.getMessage());
+			}
+			
 
 			//On remplit le renderer Reservation
 			ListCellRenderer maListReservationsCellRenderer = new ReservationsListCellRenderer();

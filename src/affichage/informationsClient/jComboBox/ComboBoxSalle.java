@@ -1,14 +1,11 @@
 package affichage.informationsClient.jComboBox;
 
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import donnees.salles.Salle;
 
 public class ComboBoxSalle extends JPanel {
 	private DefaultComboBoxModel comboSalles;
@@ -21,8 +18,8 @@ public class ComboBoxSalle extends JPanel {
 
 	private void initialize() {
 		comboSalles = new DefaultComboBoxModel();
-		comboSalles.addElement("Petite");
-		comboSalles.addElement("Moyenne");
+		comboSalles.addElement(Salle.type.PETITE.toString());
+		comboSalles.addElement(Salle.type.MOYENNE.toString());
 		combo = new JComboBox(comboSalles);
 		add(combo);
 	}

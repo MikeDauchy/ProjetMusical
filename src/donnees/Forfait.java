@@ -3,6 +3,8 @@ package donnees;
 import java.sql.SQLException;
 import java.util.Date;
 
+import donnees.salles.Salle;
+
 import exceptions.accesAuDonnees.ObjetInconnu;
 import fabriques.donnes.ClientFactory;
 
@@ -14,6 +16,17 @@ public class Forfait {
 	private Date dateDebut;
 	private Date dateFin;
 	private double montant;
+	private Salle.type typeSalle;
+	
+	
+
+	public Salle.type getTypeSalle() {
+		return typeSalle;
+	}
+
+	public void setTypeSalle(Salle.type typeSalle) {
+		this.typeSalle = typeSalle;
+	}
 
 	public int getIdForfait() {
 		return idForfait;

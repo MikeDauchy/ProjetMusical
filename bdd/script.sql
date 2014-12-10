@@ -18,7 +18,9 @@ CREATE TABLE forfait(
 	nb_heure int,
 	date_debut DATE,
 	date_fin DATE,
-	montant int
+	montant int,
+	type_salle varchar(250)
+	
 );
 
 CREATE TABLE Reservation(

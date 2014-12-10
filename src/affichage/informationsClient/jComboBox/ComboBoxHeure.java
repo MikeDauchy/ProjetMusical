@@ -34,7 +34,7 @@ public class ComboBoxHeure extends JPanel{
 	}
 	
 	public void SelectItem(String value){
-		combo.getSelectedItem().equals(value);
+		combo.setSelectedItem(value);
 	}
 
 }

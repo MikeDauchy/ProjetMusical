@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import donnees.Facture;
 import donnees.Forfait;
+import donnees.salles.Salle;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
@@ -24,7 +24,7 @@ public class ForfaitFactory {
 		super();
 	}
 	
-	public Forfait creer(int idClient, int nbHeure, Date dateDebut, Date dateFin, double montant) throws ObjetExistant, CreationObjetException, SQLException {
+	public Forfait creer(int idClient, int nbHeure, Date dateDebut, Date dateFin, double montant, Salle.type typeSalle) throws ObjetExistant, CreationObjetException, SQLException {
 		Forfait forfait = null;
 		int idForfait;
 		
@@ -33,7 +33,7 @@ public class ForfaitFactory {
 				throw new ObjetExistant(Forfait.class.toString(), "pour l'idClient "+idClient);
 		}catch(ObjetInconnu e){
 			
-			String query = "INSERT INTO forfait (id_client, nb_heure, date_debut, date_fin, montant) VALUES(?, ?, ?, ?, ?)";
+			String query = "INSERT INTO forfait (id_client, nb_heure, date_debut, date_fin, montant, type_salle) VALUES(?, ?, ?, ?, ?, ?)";
 			PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.clearParameters();
 			preparedStatement.setInt(1, idClient);
@@ -41,6 +41,7 @@ public class ForfaitFactory {
 			preparedStatement.setDate(3, new java.sql.Date(dateDebut.getTime()));
 			preparedStatement.setDate(4, new java.sql.Date(dateFin.getTime()));
 			preparedStatement.setDouble(5, montant);
+			preparedStatement.setString(6, typeSalle.toString());
 			preparedStatement.executeUpdate();
 			
 			ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -60,7 +61,7 @@ public class ForfaitFactory {
 	
 	public Forfait rechercherByIdForfait(int idForfait) throws ObjetInconnu, SQLException{
 		
-		String query = "Select id_forfait, id_client, nb_heure, date_debut, date_fin, montant FROM forfait WHERE id_forfait = ?";
+		String query = "Select id_forfait, id_client, nb_heure, date_debut, date_fin, montant, type_salle FROM forfait WHERE id_forfait = ?";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		preparedStatement.clearParameters();
 		preparedStatement.setInt(1, idForfait);
@@ -76,6 +77,7 @@ public class ForfaitFactory {
 		forfait.setDateDebut(new java.util.Date(rs.getDate("date_debut").getTime()));
 		forfait.setDateFin(new java.util.Date(rs.getDate("date_fin").getTime()));
 		forfait.setMontant(rs.getDouble("montant"));
+		forfait.setTypeSalle(Salle.type.valueOf(rs.getString("type_salle")));
 		
 		return forfait;
 	}
@@ -83,7 +85,7 @@ public class ForfaitFactory {
 	public List<Forfait> rechercherByIdClient(int idClient) throws ObjetInconnu, SQLException{
 		List<Forfait> listForfaits = new ArrayList<Forfait>();
 		
-		String query = "Select id_forfait, id_client, nb_heure, date_debut, date_fin, montant FROM forfait WHERE id_client = ?";
+		String query = "Select id_forfait, id_client, nb_heure, date_debut, date_fin, montant, type_salle FROM forfait WHERE id_client = ?";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		preparedStatement.clearParameters();
 		preparedStatement.setInt(1, idClient);
@@ -99,6 +101,7 @@ public class ForfaitFactory {
 			forfait.setDateDebut(new java.util.Date(rs.getDate("date_debut").getTime()));
 			forfait.setDateFin(new java.util.Date(rs.getDate("date_fin").getTime()));
 			forfait.setMontant(rs.getDouble("montant"));
+			forfait.setTypeSalle(Salle.type.valueOf(rs.getString("type_salle")));
 			listForfaits.add(forfait);
 		}while(rs.next());
 		
@@ -108,7 +111,7 @@ public class ForfaitFactory {
 	public List<Forfait> lister() throws SQLException {
 		List<Forfait> listForfait = new ArrayList<Forfait>();
 		
-		String query = "Select id_forfait, id_client, nb_heure, date_debut, date_fin, montant FROM forfait";
+		String query = "Select id_forfait, id_client, nb_heure, date_debut, date_fin, montant, type_salle FROM forfait";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		ResultSet rs = preparedStatement.executeQuery();
 		
@@ -120,6 +123,7 @@ public class ForfaitFactory {
 			forfait.setDateDebut(new java.util.Date(rs.getDate("date_debut").getTime()));
 			forfait.setDateFin(new java.util.Date(rs.getDate("date_fin").getTime()));
 			forfait.setMontant(rs.getDouble("montant"));
+			forfait.setTypeSalle(Salle.type.valueOf(rs.getString("type_salle")));
 			listForfait.add(forfait);
 		}
 		
@@ -131,7 +135,7 @@ public class ForfaitFactory {
 		if(rechercherByIdForfait(forfait.getIdForfait()) == null)
 			throw new ObjetInconnu(Forfait.class.toString(), forfait.toString());
 		
-		String query = "UPDATE forfait SET id_client = ?, nb_heure = ?, date_debut = ?, date_fin = ?, montant = ? WHERE id_forfait = ?";
+		String query = "UPDATE forfait SET id_client = ?, nb_heure = ?, date_debut = ?, date_fin = ?, montant = ?, type_salle = ? WHERE id_forfait = ?";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		preparedStatement.clearParameters();
 		preparedStatement.setInt(1, forfait.getIdClient());
@@ -139,7 +143,8 @@ public class ForfaitFactory {
 		preparedStatement.setDate(3, new java.sql.Date(forfait.getDateDebut().getTime()));
 		preparedStatement.setDate(4, new java.sql.Date(forfait.getDateFin().getTime()));
 		preparedStatement.setDouble(5, forfait.getMontant());
-		preparedStatement.setDouble(6, forfait.getIdForfait());
+		preparedStatement.setString(6, forfait.getTypeSalle().toString());
+		preparedStatement.setDouble(7, forfait.getIdForfait());
 		preparedStatement.executeUpdate();
 	}
 	
