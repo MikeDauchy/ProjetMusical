@@ -1,4 +1,4 @@
-package affichage.reservations.panel;
+package affichage.consulter_reservations.panel;
 
 import java.awt.Dialog;
 import java.awt.GridLayout;
@@ -7,9 +7,9 @@ import java.util.Date;
 
 import javax.swing.JPanel;
 
-import affichage.reservations.panel.sallePanel.EnregistrementSallePanel;
-import affichage.reservations.panel.sallePanel.MoyenneSallePanel;
-import affichage.reservations.panel.sallePanel.PetiteSallePanel;
+import affichage.consulter_reservations.panel.sallePanel.EnregistrementSallePanel;
+import affichage.consulter_reservations.panel.sallePanel.MoyenneSallePanel;
+import affichage.consulter_reservations.panel.sallePanel.PetiteSallePanel;
 import donnees.reservations.Reservation;
 import donnees.salles.Salle;
 import exceptions.accesAuDonnees.ObjetInconnu;

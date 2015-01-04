@@ -1,4 +1,4 @@
-package affichage.reservations.panel.ReservationPanel;
+package affichage.consulter_reservations.panel.ReservationPanel;
 
 import javax.swing.JPanel;
 

@@ -1,4 +1,4 @@
-package affichage.reservations;
+package affichage.consulter_reservations;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,7 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import affichage.reservations.panel.PanelAgenda;
+import affichage.consulter_reservations.panel.PanelAgenda;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
 import fabriques.donnes.ReservationFactory;

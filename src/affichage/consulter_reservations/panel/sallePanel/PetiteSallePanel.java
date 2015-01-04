@@ -1,4 +1,4 @@
-package affichage.reservations.panel.sallePanel;
+package affichage.consulter_reservations.panel.sallePanel;
 
 import java.awt.Color;
 import java.awt.Dialog;
