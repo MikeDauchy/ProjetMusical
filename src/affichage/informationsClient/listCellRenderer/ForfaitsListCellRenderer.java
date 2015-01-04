@@ -18,7 +18,7 @@ public class ForfaitsListCellRenderer implements ListCellRenderer{
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index,
 			boolean isSelected, boolean cellHasFocus) {
-		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list,((Forfait)value).getIdForfait(), index,
+		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list,((Forfait)value).getTypeSalle(), index,
 				isSelected, cellHasFocus);
 		return renderer;
 	}

@@ -18,7 +18,7 @@ public class ReservationsListCellRenderer implements ListCellRenderer{
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index,
 			boolean isSelected, boolean cellHasFocus) {
-		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list,((Reservation)value).getIdReservation(), index,
+		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list,((Reservation)value).getDateDebut(), index,
 				isSelected, cellHasFocus);
 		return renderer;
 	}
