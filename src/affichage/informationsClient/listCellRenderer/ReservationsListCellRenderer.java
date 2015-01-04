@@ -12,7 +12,6 @@ import donnees.reservations.Reservation;
 
 public class ReservationsListCellRenderer implements ListCellRenderer{
 
-
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
 	@Override
@@ -22,5 +21,5 @@ public class ReservationsListCellRenderer implements ListCellRenderer{
 				isSelected, cellHasFocus);
 		return renderer;
 	}
-
+	
 }

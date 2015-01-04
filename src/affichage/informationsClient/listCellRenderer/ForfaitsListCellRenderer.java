@@ -12,7 +12,6 @@ import donnees.Forfait;
 
 public class ForfaitsListCellRenderer implements ListCellRenderer{
 
-
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
 	@Override
@@ -22,6 +21,5 @@ public class ForfaitsListCellRenderer implements ListCellRenderer{
 				isSelected, cellHasFocus);
 		return renderer;
 	}
-
-
+	
 }
