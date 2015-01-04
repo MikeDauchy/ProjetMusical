@@ -1,6 +1,7 @@
 package affichage.reservations.panel.sallePanel;
 
 import java.awt.Dialog;
+import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
@@ -33,6 +34,7 @@ public class SallePanel extends JPanel {
 		this.addMouseListener(new Listner(this));
 		this.typeSalle = typeSalle;
 		this.dialog = dialog;
+		this.setLayout(new GridLayout(1, 1));
 
 		if (reservation != null) {
 			if (reservation.getFacture().isEstPaye()) {

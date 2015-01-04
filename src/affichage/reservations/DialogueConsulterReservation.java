@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,7 +50,10 @@ public class DialogueConsulterReservation extends JPanel{
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
 		
+		Date date = new Date();
+		Date dateRef = new Date(date.getYear(), date.getMonth(), date.getDay(), 0, 0);
 		dateDeReference = new java.util.GregorianCalendar();
+		dateDeReference.setTime(dateRef);
 		
 		//creation de l'entete
 		creationListenerBtnPrec();
@@ -66,12 +70,13 @@ public class DialogueConsulterReservation extends JPanel{
 		
 		
 		//Chargement du contenu du planning
-		Calendar dimancheDeReference = new java.util.GregorianCalendar();
-		dimancheDeReference.add(Calendar.DATE, 1);
+		Calendar dateRefPlusUn = new java.util.GregorianCalendar();
+		dateRefPlusUn.setTime(dateRef);
+		dateRefPlusUn.add(Calendar.DATE, 1);
 				
 		List<Reservation> listReservation;
 		try {
-			listReservation = ReservationFactory.getInstance().listerByDates(dateDeReference.getTime(), dimancheDeReference.getTime());
+			listReservation = ReservationFactory.getInstance().listerByDates(dateDeReference.getTime(), dateRefPlusUn.getTime());
 		} catch (ObjetInconnu e) {
 			listReservation = new ArrayList<Reservation>();
 		}
