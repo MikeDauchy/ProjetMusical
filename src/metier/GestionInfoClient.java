@@ -5,7 +5,6 @@ import donnees.reservations.Reservation;
 
 public class GestionInfoClient {
 
-
 	public void addPtFidelite(Client client, Reservation reservation){
 		int nbPtFideliteClient = client.getPointFidelite();
 		int nbHeure= reservation.getNbHeure();
@@ -21,5 +20,5 @@ public class GestionInfoClient {
 	public boolean deuxHeuresGratuite(Client client){
 		return client.getPointFidelite()>=150;
 	}
-
+	
 }
