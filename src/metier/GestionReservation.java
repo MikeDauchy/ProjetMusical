@@ -12,8 +12,8 @@ import fabriques.donnes.FactureFactory;
 import fabriques.donnes.ReservationFactory;
 
 public class GestionReservation {
-	GestionForfait gestForfait;
-	GestionInfoClient gestInfoClient;
+	GestionForfait gestForfait = new GestionForfait();
+	GestionInfoClient gestInfoClient = new GestionInfoClient();
 
 	public void supprimerReservationSalle(Reservation reservation) throws SQLException, ObjetInconnu{
 		ReservationFactory.getInstance().supprimer(reservation);
@@ -24,16 +24,20 @@ public class GestionReservation {
 	}
 
 	public void paiementReservationCB(Reservation reservation) throws ObjetInconnu, SQLException{
-		if(!reservation.getFacture().isEstPaye()){
-			reservation.getFacture().setEstPaye(true);
+		Facture facture =reservation.getFacture();
+		if(!facture.isEstPaye()){
+			facture.setEstPaye(true);
+			FactureFactory.getInstance().update(facture);
 		}
 	}
 
 	public void paiementReservationForfait(Reservation reservation,Forfait forfait) throws ObjetInconnu, SQLException{
-		if(!reservation.getFacture().isEstPaye()){
+		Facture facture =reservation.getFacture();
+		if(!facture.isEstPaye()){
 			if(forfait.getNbHeure() > reservation.getNbHeure() || forfait.getNbHeure() !=0){
 				gestForfait.deductHeure(reservation ,forfait);
-				reservation.getFacture().setEstPaye(true);
+				facture.setEstPaye(true);
+				FactureFactory.getInstance().update(facture);
 			}
 			else{
 				throw new ForfaitNbHeuresInsuffissantException("Nombre d'heure sur le forfait insuffisant");
@@ -42,10 +46,12 @@ public class GestionReservation {
 	}
 
 	public void paiementReservationPtsFidelite(Reservation reservation) throws ObjetInconnu, SQLException, PointsFideliteInsuffisantException{
-		if(!reservation.getFacture().isEstPaye()){
+		Facture facture =reservation.getFacture();
+		if(!facture.isEstPaye()){
 			if(gestInfoClient.deuxHeuresGratuite(reservation.getFacture().getClient()) && reservation.getNbHeure()<=2 ){
-				reservation.getFacture().setEstPaye(true);
-				gestInfoClient.deletePtFidelite(reservation.getFacture().getClient(), 150);
+				facture.setEstPaye(true);
+				gestInfoClient.deletePtFidelite(facture.getClient(), 150);
+				FactureFactory.getInstance().update(facture);
 			}
 			else{
 				throw new PointsFideliteInsuffisantException("Vous ne pouvez pas utiliser ce type de paiement");
