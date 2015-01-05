@@ -9,6 +9,7 @@ import exceptions.accesAuDonnees.ObjetInconnu;
 import exceptions.metier.ForfaitNbHeuresInsuffissantException;
 import exceptions.metier.PointsFideliteInsuffisantException;
 import fabriques.donnes.FactureFactory;
+import fabriques.donnes.ForfaitFactory;
 import fabriques.donnes.ReservationFactory;
 
 public class GestionReservation {
@@ -38,6 +39,7 @@ public class GestionReservation {
 				gestForfait.deductHeure(reservation ,forfait);
 				facture.setEstPaye(true);
 				FactureFactory.getInstance().update(facture);
+				ForfaitFactory.getInstance().update(forfait);
 			}
 			else{
 				throw new ForfaitNbHeuresInsuffissantException("Nombre d'heure sur le forfait insuffisant");
