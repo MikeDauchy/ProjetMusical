@@ -21,12 +21,16 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import metier.GestionReservation;
 import affichage.consulter_reservations.panel.PanelAgenda;
+import donnees.Client;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
+import exceptions.metier.PointsFideliteInsuffisantException;
 import fabriques.donnes.ReservationFactory;
 
 
@@ -37,12 +41,15 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 	private Dialog dialog;
 	private JCheckBox paiementCB, paiementForfait, paiementPtFidelite;
 	private JButton validPaiement = new JButton("Valider");
+	private Reservation reservation;
+	private GestionReservation gestReserv = new GestionReservation();
 
 
-	public DialoguePaiement(Dialog dialog) {
+	public DialoguePaiement(Dialog dialog, Reservation reservation) {
 		super();
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
+		this.reservation=reservation;
 
 
 		//Type de Paiement
@@ -78,11 +85,30 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 		Object o=e.getSource();
 		if(o == validPaiement){
 			if(paiementCB.isSelected()){
+				try {
+					gestReserv.paiementReservationCB(reservation);
+					dialog.setVisible(false);
+				} catch (ObjetInconnu e1) {
+					JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(dialog, "Erreur SQL", "Erreur", JOptionPane.ERROR_MESSAGE);
+				}
 
 			}else if(paiementForfait.isSelected()){
 
 			}else if(paiementPtFidelite.isSelected()){
+				try {
+					gestReserv.paiementReservationPtsFidelite(reservation);
+					dialog.setVisible(false);
+				} catch (ObjetInconnu e1) {
+					JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(dialog, "Erreur SQL", "Erreur", JOptionPane.ERROR_MESSAGE);
+				} catch (PointsFideliteInsuffisantException e1) {
+					JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 
+				}
 			}else{ 
 				return;
 			}
