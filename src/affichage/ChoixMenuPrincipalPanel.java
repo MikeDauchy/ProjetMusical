@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import affichage.consulter_reservations.DialogueConsulterReservation;
+import affichage.editer_reservation.DialogueEditerReservation;
 import affichage.informationsClient.jDialog.DialogueInformationsClient;
 
 public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
@@ -29,14 +30,13 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 	private JFrame frame;
 
 	private JDialog dialogConsulterReservation;
-	private JFrame dialogEditerReservation;
+	private JDialog dialogEditerReservation;
 	private JDialog dialogInformationsClient;
 
 
 	private JButton boutonConsulterReservation = new JButton("Consulter réservation");
 	private JButton boutonEditerReservation = new JButton("Editer réservation");
-	private JButton boutonInformationsClient = new JButton(
-			"Informations client");
+	private JButton boutonInformationsClient = new JButton("Informations client");
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -59,6 +59,12 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 		dialogConsulterReservation.getContentPane().add(new DialogueConsulterReservation(dialogConsulterReservation), BorderLayout.CENTER);
 		dialogConsulterReservation.setLocationRelativeTo(frame);
 		dialogConsulterReservation.pack();
+		
+		this.frame = frame;
+		dialogEditerReservation = new JDialog(frame, "Editer Reservation", true);
+		dialogEditerReservation.getContentPane().add(new DialogueEditerReservation(dialogEditerReservation), BorderLayout.CENTER);
+		dialogEditerReservation.setLocationRelativeTo(frame);
+		dialogEditerReservation.pack();
 
 		dialogInformationsClient = new JDialog (frame, "Informations client",true);
 		dialogInformationsClient.getContentPane().add(new DialogueInformationsClient(dialogInformationsClient), BorderLayout.CENTER);
@@ -66,6 +72,7 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 		dialogInformationsClient.pack();
 
 		boutonConsulterReservation.addActionListener(this);
+		boutonEditerReservation.addActionListener(this);
 		boutonInformationsClient.addActionListener(this);
 
 		JPanel boutonPanel = new JPanel();
