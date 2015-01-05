@@ -292,7 +292,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		listForfaitsScrollPane.setBorder (BorderFactory.createTitledBorder (
 				BorderFactory.createLineBorder (Color.cyan),
 				"Forfaits"));
-		listReservations.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
+		listForfaits.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
 
 		//panel de droite
 		JPanel panelDroite=new JPanel();
@@ -329,8 +329,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		listReservations.addListSelectionListener(this);
 		listForfaits.addListSelectionListener(this);
 
-		//JDialog pour le paiements des reservations non validé
-		dialogPaiementReservation = new JDialog (dialog, "Paiement reservation",true);
+
 
 
 		setVisible(true);
@@ -370,10 +369,21 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// Nettoyer information fields client
 			ClearField();
 		} else if(o== confR) {
-			dialogPaiementReservation.getContentPane().add(new DialoguePaiement(dialogPaiementReservation,reservationSelectionne), BorderLayout.CENTER);
-			dialogPaiementReservation.setLocationRelativeTo(dialog);
-			dialogPaiementReservation.pack();
-			dialogPaiementReservation.setVisible(true);
+			try {
+				//JDialog pour le paiements des reservations non validé
+				dialogPaiementReservation = new JDialog (dialog, "Paiement reservation",true);
+				dialogPaiementReservation.getContentPane().add(new DialoguePaiement(dialogPaiementReservation,reservationSelectionne), BorderLayout.CENTER);
+				dialogPaiementReservation.setLocationRelativeTo(dialog);
+				dialogPaiementReservation.pack();
+				dialogPaiementReservation.setVisible(true);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ObjetInconnu e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		} else if(o== annulR) {
 			// Annuler réservation
 			try {
@@ -480,11 +490,11 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			}
 
 
-			//On remplit le renderer Reservation
+			//On remplit le renderer Réservations
 			ListCellRenderer maListReservationsCellRenderer = new ReservationsListCellRenderer();
 			listReservations.setCellRenderer(maListReservationsCellRenderer);
 
-			//On remplit le renderer Reservation
+			//On remplit le renderer Forfait
 			ListCellRenderer maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
 			listForfaits.setCellRenderer(maListForfaitsCellRenderer);
 		}else if(o==listReservations){

@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,13 +40,14 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
 	private Dialog dialog;
+	JDialog dialogPaiementForfaits;
 	private JCheckBox paiementCB, paiementForfait, paiementPtFidelite;
 	private JButton validPaiement = new JButton("Valider");
 	private Reservation reservation;
 	private GestionReservation gestReserv = new GestionReservation();
 
 
-	public DialoguePaiement(Dialog dialog, Reservation reservation) {
+	public DialoguePaiement(Dialog dialog, Reservation reservation) throws SQLException, ObjetInconnu {
 		super();
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
@@ -96,6 +98,21 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 				}
 
 			}else if(paiementForfait.isSelected()){
+				//JDialog pour le paiements des reservations non validé
+				dialogPaiementForfaits = new JDialog (dialog, "Choix du forfait",true);
+				try {
+					dialogPaiementForfaits.getContentPane().add(new DialogueForfaits(dialogPaiementForfaits,reservation.getFacture().getClient(),reservation), BorderLayout.CENTER);
+					dialogPaiementForfaits.setLocationRelativeTo(dialog);
+					dialogPaiementForfaits.pack();
+					dialogPaiementForfaits.setVisible(true);
+					dialog.setVisible(false);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ObjetInconnu e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
 			}else if(paiementPtFidelite.isSelected()){
 				try {
