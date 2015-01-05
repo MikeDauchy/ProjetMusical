@@ -6,7 +6,7 @@ import donnees.reservations.Reservation;
 public class GestionInfoClient {
 
 
-	public void addPtFidelite (Client client, Reservation reservation){
+	public void addPtFidelite(Client client, Reservation reservation){
 		int nbPtFideliteClient = client.getPointFidelite();
 		int nbHeure= reservation.getNbHeure();
 		int nbPtFidelite = 5 * nbHeure;
