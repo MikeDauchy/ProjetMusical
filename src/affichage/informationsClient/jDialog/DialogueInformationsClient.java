@@ -37,6 +37,7 @@ import affichage.informationsClient.jComboBox.ComboBoxValidite;
 import affichage.informationsClient.listCellRenderer.ClientsListCellRenderer;
 import affichage.informationsClient.listCellRenderer.ForfaitsListCellRenderer;
 import affichage.informationsClient.listCellRenderer.ReservationsListCellRenderer;
+import affichage.paiement.jDialog.DialoguePaiement;
 import donnees.Client;
 import donnees.Forfait;
 import donnees.reservations.Reservation;
@@ -63,6 +64,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 
 	JDialog dialog;
+	JDialog dialogPaiementReservation;
 
 	// partie gauche de la fenetre : gestion des entrees
 	//les listes des objets
@@ -310,6 +312,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		setLayout (new BorderLayout());
 		add (panelGauche, BorderLayout.WEST);
 		add (panelDroite, BorderLayout.EAST);
+		
+
 
 		// Ajout des action listener
 		addC.addActionListener(this);
@@ -324,6 +328,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		listClients.addListSelectionListener(this);
 		listReservations.addListSelectionListener(this);
 		listForfaits.addListSelectionListener(this);
+
+		//JDialog pour le paiements des reservations non validé
+		dialogPaiementReservation = new JDialog (dialog, "Paiement reservation",true);
 
 
 		setVisible(true);
@@ -363,8 +370,10 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// Nettoyer information fields client
 			ClearField();
 		} else if(o== confR) {
-			// Confirm réservation
-
+			dialogPaiementReservation.getContentPane().add(new DialoguePaiement(dialogPaiementReservation,reservationSelectionne), BorderLayout.CENTER);
+			dialogPaiementReservation.setLocationRelativeTo(dialog);
+			dialogPaiementReservation.pack();
+			dialogPaiementReservation.setVisible(true);
 		} else if(o== annulR) {
 			// Annuler réservation
 			try {
