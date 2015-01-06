@@ -22,6 +22,7 @@ import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
 import exceptions.metier.ForfaitNbHeuresInsuffissantException;
 import exceptions.metier.PointsFideliteInsuffisantException;
+import exceptions.metier.SalleDejaReserveException;
 import fabriques.donnes.ClientFactory;
 import fabriques.donnes.FactureFactory;
 import fabriques.donnes.ForfaitFactory;
@@ -94,42 +95,101 @@ public class GestionReservation {
 		}
 	}
 	
-	
-	public void reserver(Date dateDebut, Date dateFin, int nbHeure, Salle salle, Client client, boolean isRepeted, int nbRepeter) throws CreationObjetException, ObjetExistant, SQLException{
-				
-		Facture facture = FactureFactory.getInstance().creer(client.getIdClient(), false);
+	public Date conseillerDateReservation(int heureDeb, int nbHeure, Salle.type typeSalle,  int nbRepeter) throws SQLException, ObjetInconnu{
 		
+		Date dateRefDebut = new Date();
+		dateRefDebut.setHours(heureDeb);
+		dateRefDebut.setMinutes(0);
+		dateRefDebut.setSeconds(0);
+		Date dateRefFin = (Date)dateRefDebut.clone();
+		dateRefFin.setHours(dateRefDebut.getHours()+nbHeure);
+		int nbTourwhile = 0;
 		
-		if(isRepeted){
-			//recherche si la reservation est compatible
-			Date dateDebTemp = (Date) dateDebut.clone();
-			Date dateFinTemp = (Date) dateFin.clone();
-			for(int i = 0; i != nbRepeter; i++){
-				try {
-					ReservationFactory.getInstance().rechercherByIdSalleAndDates(salle.getIdSalle(), dateDebTemp, dateFinTemp);
-				} catch (ObjetInconnu e) { //Resultat attendu, on a pas de reservation pour cette date}
-				}
-				dateDebTemp = ajouterUnJourDate(dateDebut);
-				dateFinTemp = ajouterUnJourDate(dateFin);
-			}
-				
+		//on regarde jusqu'a un an
+		while(++nbTourwhile < 365){
+			Date dateDebTmp = (Date) dateRefDebut.clone();
+			Date dateFinTmp = (Date) dateRefFin.clone();
 			
-			for(int i = 0; i != nbRepeter; i++){
-				ReservationFactory.getInstance().creer(facture.getIdFacture(), salle.getIdSalle(), nbHeure, dateDebut, dateFin);
-				dateDebut = ajouterUnJourDate(dateDebut);
-				dateFin = ajouterUnJourDate(dateFin);
+			List<Salle> listsalle  = SalleFactory.getInstance().rechercherByTypeSalle(typeSalle);
+			for(Salle salle : listsalle){
+				int nbBoucle = 0;
+				for(int i = 0; i != nbRepeter; i++){
+					try {
+						ReservationFactory.getInstance().rechercherByIdSalleAndDates(salle.getIdSalle(), dateRefDebut, dateRefFin);
+						break;
+					} catch (ObjetInconnu e) { //Resultat attendu, on a pas de reservation pour cette date}
+					}
+					dateDebTmp = ajouterUneSemaineDate(dateDebTmp);
+					dateFinTmp = ajouterUneSemaineDate(dateFinTmp);
+					nbBoucle++;
+				}
+				if(nbBoucle == nbRepeter){
+					return dateRefDebut;
+				}
 			}
-		}else{
-			ReservationFactory.getInstance().creer(facture.getIdFacture(), salle.getIdSalle(), nbHeure, dateDebut, dateFin);
+			dateRefDebut = ajouterUnJourDate(dateRefDebut);
+			dateRefFin = ajouterUnJourDate(dateRefFin);
+		}
+		throw new SalleDejaReserveException("toutes les salles sont reservées jusqu'a un an pour cette configuration : "+ nbHeure+ " "+ typeSalle +" "+ nbRepeter);
+	}
+	
+	
+	public void reserverTypeSalle(Date dateDebut, Date dateFin, int nbHeure, Salle.type typeSalle, Client client, int nbRepeter) throws CreationObjetException, ObjetExistant, SQLException, ObjetInconnu{
+		List<Salle> listsalle  = SalleFactory.getInstance().rechercherByTypeSalle(typeSalle);
+		for(Salle salle : listsalle){
+			try {
+				reserver(dateDebut, dateFin, nbHeure, salle, client, nbRepeter);
+				return; //on a reussi a reserver avec cette salle
+			} catch (SalleDejaReserveException | CreationObjetException | ObjetExistant | SQLException e) { //on continue avec une autre salle
+				}
 		}
 		
+		//On a pas trouvé de salle de libre pour ce crenau
+		throw new SalleDejaReserveException("La salle est déjà reservé pour la date "+ dateDebut);
+	}
+	
+	
+	public void reserver(Date dateDebut, Date dateFin, int nbHeure, Salle salle, Client client, int nbRepeter) throws CreationObjetException, ObjetExistant, SQLException{
+				
+		//recherche si la reservation est compatible
+		Date dateDebTemp = (Date) dateDebut.clone();
+		Date dateFinTemp = (Date) dateFin.clone();
+		for(int i = 0; i != nbRepeter; i++){
+			try {
+				ReservationFactory.getInstance().rechercherByIdSalleAndDates(salle.getIdSalle(), dateDebTemp, dateFinTemp);
+				throw new SalleDejaReserveException("La salle est déjà reservé pour la date "+ dateDebTemp);
+			} catch (ObjetInconnu e) { //Resultat attendu, on a pas de reservation pour cette date}
+			}
+			dateDebTemp = ajouterUneSemaineDate(dateDebTemp);
+			dateFinTemp = ajouterUneSemaineDate(dateFinTemp);
+		}
+		//
+		
+		//La reservation est compatible
+		dateDebTemp = (Date) dateDebut.clone();
+		dateFinTemp = (Date) dateFin.clone();
+		Facture facture = FactureFactory.getInstance().creer(client.getIdClient(), false);
+		for(int i = 0; i != nbRepeter; i++){
+			ReservationFactory.getInstance().creer(facture.getIdFacture(), salle.getIdSalle(), nbHeure, dateDebTemp, dateFinTemp);
+			dateDebTemp = ajouterUneSemaineDate(dateDebTemp);
+			dateFinTemp = ajouterUneSemaineDate(dateFinTemp);
+		}
+		//
 	}
 		
-	private Date ajouterUnJourDate(Date date){
+	private Date ajouterUneSemaineDate(Date date){
 			GregorianCalendar calendar = new java.util.GregorianCalendar();
 			calendar.setTime(date);
 			calendar.add(Calendar.DATE, 7);
 			date = calendar.getTime();
 			return date;
+	}
+	
+	private Date ajouterUnJourDate(Date date){
+		GregorianCalendar calendar = new java.util.GregorianCalendar();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, 1);
+		date = calendar.getTime();
+		return date;
 	}
 }

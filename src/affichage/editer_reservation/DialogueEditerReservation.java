@@ -16,7 +16,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -34,12 +33,9 @@ import metier.GestionReservation;
 
 import org.jdatepicker.JDateComponentFactory;
 import org.jdatepicker.JDatePicker;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import donnees.Client;
-import donnees.Facture;
 import donnees.salles.EnregistrementSalle;
 import donnees.salles.MoyenneSalle;
 import donnees.salles.PetiteSalle;
@@ -47,10 +43,8 @@ import donnees.salles.Salle;
 import exceptions.accesAuDonnees.CreationObjetException;
 import exceptions.accesAuDonnees.ObjetExistant;
 import exceptions.accesAuDonnees.ObjetInconnu;
+import exceptions.metier.SalleDejaReserveException;
 import fabriques.donnes.ClientFactory;
-import fabriques.donnes.FactureFactory;
-import fabriques.donnes.ReservationFactory;
-import fabriques.donnes.SalleFactory;
 
 /**
  * @author Quentin
@@ -107,6 +101,8 @@ public class DialogueEditerReservation extends JPanel {
 	private JLabel labelRepetition = new JLabel("choisissez le nombre de répétitions", SwingConstants.CENTER);
 	private JTextField textFieldRepetition = new JTextField();
 	
+	private Date dateModel = new Date();
+	
 	public DialogueEditerReservation(Dialog dialog) {
 		super();
 		this.dialog = dialog;
@@ -129,7 +125,7 @@ public class DialogueEditerReservation extends JPanel {
 		panelNorth.add(labelTitre);
 		panelNorth.setBackground(new Color(52, 52, 52));
 
-		creationDatePicker();
+		creationDatePicker(new Date());
 		
 		panelRadioButton.add(new JLabel("Selectionner un nombre d'heure :"));
 		panelRadioButton.add(radioButtonOneHour);
@@ -189,13 +185,21 @@ public class DialogueEditerReservation extends JPanel {
 			}
 		});
 		
+		boutonConseiller.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pressConseiller();
+			}
+		});
+		
 		
 		dialog.pack();
 		dialog.setLocationRelativeTo(null);
 	}
 	
-	private void creationDatePicker(){
+	private void creationDatePicker(Date d){
 		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(d);
 	    picker.setTextEditable(true);
 	    picker.setShowYearButtons(true);
 	    picker.getModel().setYear(calendar.get(calendar.YEAR));
@@ -203,6 +207,47 @@ public class DialogueEditerReservation extends JPanel {
 	    picker.getModel().setDay(calendar.get(calendar.DAY_OF_MONTH));
 	    picker.getModel().setSelected(true);
 		
+	}
+	
+	private void pressConseiller(){
+		
+		int nbHeure;
+		if(radioButtonOneHour.isSelected()){
+			nbHeure = 1;
+		}else{
+			nbHeure = 2;
+		}
+		
+		Salle salle = null;
+		switch(Salle.type.valueOf(labelsSalle[ComboSalle.getSelectedIndex()])){
+			case PETITE:
+				salle = new PetiteSalle();
+				salle.setTypeSalle(Salle.type.PETITE);break;
+			case MOYENNE:
+				salle = new MoyenneSalle();
+				salle.setTypeSalle(Salle.type.MOYENNE);break;
+			case ENREGISTREMENT:
+				salle = new EnregistrementSalle();
+				salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
+		}
+		
+		int nbRepetition = 1;
+		if(checkboxRepeter.isSelected()){
+			if(!textFieldRepetition.getText().isEmpty()){
+				nbRepetition = Integer.parseInt(textFieldRepetition.getText());
+			}
+		}
+		
+		GestionReservation gestionReservation = new GestionReservation();
+		try {
+			Date dateConseille = gestionReservation.conseillerDateReservation(labelsHeures[ComboHoraire.getSelectedIndex()], nbHeure, salle.getTypeSalle(), nbRepetition);
+			dateModel = dateConseille;
+			creationDatePicker(dateConseille);
+		} catch (SQLException | ObjetInconnu e) {
+			labelMessage.setText("Tous les creneaux avec votre configuration sont pris");
+			labelMessage.setForeground(Color.RED);
+			e.printStackTrace();
+		}
 	}
 	
 	private void pressValider() throws ObjetInconnu, SQLException {
@@ -229,7 +274,7 @@ public class DialogueEditerReservation extends JPanel {
 			}
 			if(client != null){
 				
-				Date dateDebut = (model.getValue() == null)?new Date(): model.getValue();
+				Date dateDebut = (model.getValue() == null)?dateModel: model.getValue();
 				dateDebut.setHours(labelsHeures[ComboHoraire.getSelectedIndex()]);
 				dateDebut.setMinutes(0);
 				dateDebut.setSeconds(0);
@@ -256,17 +301,20 @@ public class DialogueEditerReservation extends JPanel {
 						salle = new EnregistrementSalle();
 						salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
 				}
-				List<Salle> listsalle  = SalleFactory.getInstance().rechercherByTypeSalle(salle.getTypeSalle());
-				salle = listsalle.get(0);
 				
-				int nbRepetition = (textFieldRepetition.getText().isEmpty())?1:Integer.parseInt(textFieldRepetition.getText());
+				int nbRepetition = 1;
+				if(checkboxRepeter.isSelected()){
+					if(!textFieldRepetition.getText().isEmpty()){
+						nbRepetition = Integer.parseInt(textFieldRepetition.getText());
+					}
+				}
 				
 				GestionReservation gestionReservation = new GestionReservation();
 				try {
-					gestionReservation.reserver(dateDebut, dateFin, nbHeure, salle, client, checkboxRepeter.isSelected(), nbRepetition);
+					gestionReservation.reserverTypeSalle(dateDebut, dateFin, nbHeure, salle.getTypeSalle(), client, nbRepetition);
 					labelMessage.setForeground(Color.GREEN);
 					labelMessage.setText("Reservation effectuée !");
-				} catch (CreationObjetException | ObjetExistant | SQLException e) {
+				} catch (SalleDejaReserveException | CreationObjetException | ObjetExistant | SQLException e) {
 					labelMessage.setText("Le crenau choisis est déjà pris");
 					labelMessage.setForeground(Color.RED);
 					e.printStackTrace();

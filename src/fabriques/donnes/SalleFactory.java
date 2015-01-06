@@ -116,7 +116,7 @@ static SalleFactory singleton;
 		List<Salle> listSalle = new ArrayList<Salle>();
 		Salle salle = null;
 		
-		String query = "Select id_salle, description, type_salle FROM salle";
+		String query = "Select id_salle, description, type_salle FROM salle ORDER BY type_salle DESC";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		ResultSet rs = preparedStatement.executeQuery();
 		
