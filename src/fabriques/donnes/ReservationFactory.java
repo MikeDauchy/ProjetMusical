@@ -30,8 +30,8 @@ public class ReservationFactory {
 			Reservation reservation = null;
 			
 			try{
-				if(!rechercherByIdSalleAndDates(idSalle, dateDebut, dateFin).isEmpty())
-					throw new ObjetExistant(Reservation.class.toString(), "avec l'idSalle "+idSalle+" et pour les dates "+dateDebut+" et "+dateFin);
+				rechercherByIdSalleAndDates(idSalle, dateDebut, dateFin);
+				throw new ObjetExistant(Reservation.class.toString(), "avec l'idSalle "+idSalle+" et pour les dates "+dateDebut+" et "+dateFin);
 			}catch(ObjetInconnu e){
 			
 				String query = "INSERT INTO reservation (id_facture, id_salle, nb_heure, date_debut, date_fin, type_reservation) VALUES(?, ?, ?, ?, ?, ?)";
@@ -86,7 +86,7 @@ public class ReservationFactory {
 		
 		List<Reservation> listReservation = new ArrayList<Reservation>();
 		
-		String query = "Select id_reservation, id_facture, id_salle, nb_heure, date_debut, date_fin, type_reservation FROM Reservation WHERE id_salle = ? and date_debut >= ? and date_fin <= ?";
+		String query = "Select id_reservation, id_facture, id_salle, nb_heure, date_debut, date_fin, type_reservation FROM Reservation WHERE id_salle = ? and (date_debut, date_fin) OVERLAPS (? , ?)";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
 		preparedStatement.clearParameters();
 		preparedStatement.setInt(1, idSalle);

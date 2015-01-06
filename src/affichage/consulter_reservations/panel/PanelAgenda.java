@@ -66,7 +66,7 @@ public class PanelAgenda extends JPanel {
 					jourHeure.setMinutes(0);
 					
 					
-					this.add(new HeurePanel(reservationsHeure, jourHeure, dialog, salle.getTypeSalle()));
+					this.add(new HeurePanel(reservationsHeure, jourHeure, dialog, salle));
 				}
 			}
 		}

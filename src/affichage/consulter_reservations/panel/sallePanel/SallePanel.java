@@ -23,16 +23,16 @@ public class SallePanel extends JPanel {
 	Reservation reservation;
 	Date heure;
 	boolean estPaye;
-	Salle.type typeSalle;
+	Salle salle;
 	Dialog dialog;
 
-	public SallePanel(Reservation reservation, Date jourHeure, Salle.type typeSalle, Dialog dialog) throws ObjetInconnu,
+	public SallePanel(Reservation reservation, Date jourHeure, Salle.type typeSalle, Dialog dialog, Salle salle) throws ObjetInconnu,
 			SQLException {
 		super();
 		this.reservation = reservation;
 		this.heure = jourHeure;
 		this.addMouseListener(new Listner(this));
-		this.typeSalle = typeSalle;
+		this.salle = salle;
 		this.dialog = dialog;
 		this.setLayout(new GridLayout(1, 1));
 
@@ -60,7 +60,7 @@ public class SallePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			if (!p.estPaye) {
 				this.p.removeAll();
-				this.p.add(new NouvelleReservationPanel(reservation, heure, typeSalle));
+				this.p.add(new NouvelleReservationPanel(reservation, heure, salle));
 				p.revalidate();
 				p.dialog.pack();
 				p.dialog.setLocationRelativeTo(null);

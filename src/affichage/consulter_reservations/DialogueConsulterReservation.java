@@ -50,10 +50,10 @@ public class DialogueConsulterReservation extends JPanel{
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
 		
-		Date date = new Date();
-		Date dateRef = new Date(date.getYear(), date.getMonth(), date.getDay(), 0, 0);
 		dateDeReference = new java.util.GregorianCalendar();
-		dateDeReference.setTime(dateRef);
+		dateDeReference.set(Calendar.HOUR, -8);
+		dateDeReference.set(Calendar.MINUTE, 0);
+		dateDeReference.set(Calendar.SECOND, 0);
 		
 		//creation de l'entete
 		creationListenerBtnPrec();
@@ -71,8 +71,8 @@ public class DialogueConsulterReservation extends JPanel{
 		
 		//Chargement du contenu du planning
 		Calendar dateRefPlusUn = new java.util.GregorianCalendar();
-		dateRefPlusUn.setTime(dateRef);
 		dateRefPlusUn.add(Calendar.DATE, 1);
+		dateRefPlusUn.set(Calendar.HOUR, -8);
 				
 		List<Reservation> listReservation;
 		try {

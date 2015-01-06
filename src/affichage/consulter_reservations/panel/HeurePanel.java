@@ -18,19 +18,19 @@ public class HeurePanel extends JPanel{
 
 	JPanel sallePanel;
 	
-	public HeurePanel(Reservation reservationsHeure, Date jourHeure, Dialog dialog, Salle.type typeSalle) throws ObjetInconnu, SQLException {
+	public HeurePanel(Reservation reservationsHeure, Date jourHeure, Dialog dialog, Salle salle) throws ObjetInconnu, SQLException {
 		super();
 
 	    this.setLayout(new GridLayout(1, 3));
 	    
 	    
-	    switch(typeSalle){
+	    switch(salle.getTypeSalle()){
 	    	case PETITE:
-	    		sallePanel = new PetiteSallePanel(reservationsHeure, jourHeure, dialog);break;
+	    		sallePanel = new PetiteSallePanel(reservationsHeure, jourHeure, dialog, salle);break;
 	    	case MOYENNE:
-	    		sallePanel = new MoyenneSallePanel(reservationsHeure, jourHeure, dialog);break;
+	    		sallePanel = new MoyenneSallePanel(reservationsHeure, jourHeure, dialog, salle);break;
 	    	case ENREGISTREMENT:
-	    		sallePanel = new EnregistrementSallePanel(reservationsHeure, jourHeure, dialog);break;
+	    		sallePanel = new EnregistrementSallePanel(reservationsHeure, jourHeure, dialog, salle);break;
 	    
 	    }
 	    add(sallePanel);

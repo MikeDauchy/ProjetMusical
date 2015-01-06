@@ -29,15 +29,15 @@ public class NouvelleReservationPanel extends JPanel{
 	private JButton salleButton;
 	private JButton supprimerSalleButton;
 	private Date dateDebut; 
-	private Salle.type typeSalle;
+	private Salle salle;
 	private Reservation reservation;
 	
-	public NouvelleReservationPanel(Reservation reservation, Date dateDebut, Salle.type typeSalle) {
+	public NouvelleReservationPanel(Reservation reservation, Date dateDebut, Salle salle) {
 		
 		this.setLayout(new  BorderLayout());
 		
 		this.dateDebut = dateDebut;
-		this.typeSalle = typeSalle;
+		this.salle = salle;
 		this.reservation = reservation;
 		
 		supprimerSalleButton = new JButton("suppr");
@@ -86,7 +86,6 @@ public class NouvelleReservationPanel extends JPanel{
 				Date dateFin = (Date)dateDebut.clone();
 				dateFin.setHours(dateDebut.getHours()+1);
 				Facture facture = FactureFactory.getInstance().creer(client.getIdClient(), false);
-				Salle salle  = SalleFactory.getInstance().rechercherByTypeSalle(typeSalle);
 				this.reservation = ReservationFactory.getInstance().creer(facture.getIdFacture(), salle.getIdSalle(), 1, dateDebut, dateFin);
 				
 			} catch (CreationObjetException e) {

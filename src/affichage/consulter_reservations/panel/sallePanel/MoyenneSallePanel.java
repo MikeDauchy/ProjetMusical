@@ -14,8 +14,8 @@ public class MoyenneSallePanel extends SallePanel{
 
 	private static final long serialVersionUID = 1L;
 	
-	public MoyenneSallePanel(Reservation reservation, Date jourHeure, Dialog dialog) throws ObjetInconnu, SQLException {
-		super(reservation, jourHeure, Salle.type.MOYENNE, dialog);
+	public MoyenneSallePanel(Reservation reservation, Date jourHeure, Dialog dialog, Salle salle) throws ObjetInconnu, SQLException {
+		super(reservation, jourHeure, Salle.type.MOYENNE, dialog, salle);
 		this.setBackground(new Color(26, 135, 189));
 	}
 

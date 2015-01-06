@@ -14,8 +14,8 @@ public class PetiteSallePanel extends SallePanel{
 
 	private static final long serialVersionUID = 1L;
 
-	public PetiteSallePanel(Reservation reservation, Date jourHeure, Dialog dialog) throws ObjetInconnu, SQLException{
-		super(reservation, jourHeure, Salle.type.PETITE, dialog);
+	public PetiteSallePanel(Reservation reservation, Date jourHeure, Dialog dialog, Salle salle) throws ObjetInconnu, SQLException{
+		super(reservation, jourHeure, Salle.type.PETITE, dialog, salle);
 		this.setBackground(new Color(26, 162, 189));
 	}
 }

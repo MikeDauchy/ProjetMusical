@@ -79,8 +79,9 @@ static SalleFactory singleton;
 		return salle;
 	}
 	
-	public Salle rechercherByTypeSalle(Salle.type typeSalle) throws ObjetInconnu, SQLException{
+	public List<Salle> rechercherByTypeSalle(Salle.type typeSalle) throws ObjetInconnu, SQLException{
 		Salle salle = null;
+		List<Salle> listSalle = new ArrayList<Salle>();
 			
 		String query = "Select id_salle, description, type_salle FROM salle WHERE type_salle = ?";
 		PreparedStatement preparedStatement = ConnexionFactory.getInstance().prepareStatement(query);
@@ -91,22 +92,24 @@ static SalleFactory singleton;
 		if(!rs.next())
 			throw new ObjetInconnu(Salle.class.toString(), "avec le type de salle "+typeSalle.toString());
 		
+		do{
+			switch(Salle.type.valueOf(rs.getString("type_salle"))){
+				case PETITE:
+					salle = new PetiteSalle();
+					salle.setTypeSalle(Salle.type.PETITE);break;
+				case MOYENNE:
+					salle = new MoyenneSalle();
+					salle.setTypeSalle(Salle.type.MOYENNE);break;
+				case ENREGISTREMENT:
+					salle = new EnregistrementSalle();
+					salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
+			}
+			salle.setIdSalle(rs.getInt("id_salle"));
+			salle.setDescription(rs.getString("description"));
+			listSalle.add(salle);
+		}while(rs.next());
 		
-		switch(Salle.type.valueOf(rs.getString("type_salle"))){
-			case PETITE:
-				salle = new PetiteSalle();
-				salle.setTypeSalle(Salle.type.PETITE);break;
-			case MOYENNE:
-				salle = new MoyenneSalle();
-				salle.setTypeSalle(Salle.type.MOYENNE);break;
-			case ENREGISTREMENT:
-				salle = new EnregistrementSalle();
-				salle.setTypeSalle(Salle.type.ENREGISTREMENT);break;
-		}
-		salle.setIdSalle(rs.getInt("id_salle"));
-		salle.setDescription(rs.getString("description"));
-		
-		return salle;
+		return listSalle;
 	}
 	
 	public List<Salle> lister() throws SQLException {
