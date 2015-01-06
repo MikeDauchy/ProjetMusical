@@ -16,6 +16,7 @@ public class MoyenneSallePanel extends SallePanel{
 	
 	public MoyenneSallePanel(Reservation reservation, Date jourHeure, Dialog dialog, Salle salle) throws ObjetInconnu, SQLException {
 		super(reservation, jourHeure, Salle.type.MOYENNE, dialog, salle);
+		this.color =new Color(26, 135, 189);
 		this.setBackground(new Color(26, 135, 189));
 	}
 

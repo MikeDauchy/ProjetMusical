@@ -1,5 +1,6 @@
 package affichage.consulter_reservations.panel.sallePanel;
 
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
@@ -20,11 +21,12 @@ public class SallePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	Reservation reservation;
-	Date heure;
-	boolean estPaye;
-	Salle salle;
-	Dialog dialog;
+	private Reservation reservation;
+	private Date heure;
+	private boolean estPaye;
+	private Salle salle;
+	private Dialog dialog;
+	protected Color color;
 
 	public SallePanel(Reservation reservation, Date jourHeure, Salle.type typeSalle, Dialog dialog, Salle salle) throws ObjetInconnu,
 			SQLException {
@@ -39,9 +41,13 @@ public class SallePanel extends JPanel {
 		if (reservation != null) {
 			if (reservation.getFacture().isEstPaye()) {
 				this.estPaye = true;
-				this.add(new ReservationConfirmePanel(reservation));
+				JPanel reservationConfPanel = new ReservationConfirmePanel(reservation, color);
+				reservationConfPanel.setBackground(color);
+				this.add(reservationConfPanel);
 			} else {
-				this.add(new ReservationNonConfirmePanel(reservation));
+				JPanel reservationNonConfPanel = new ReservationNonConfirmePanel(reservation, color);
+				reservationNonConfPanel.setBackground(color);
+				this.add(reservationNonConfPanel);
 			}
 		}
 	}
@@ -61,7 +67,9 @@ public class SallePanel extends JPanel {
 			if (!p.estPaye) {
 				this.p.removeAll();
 				try {
-					this.p.add(new NouvelleReservationPanel(reservation, heure, salle));
+					JPanel reservationNouvelleConfPanel = new NouvelleReservationPanel(reservation, heure, salle, color);
+					reservationNouvelleConfPanel.setBackground(p.color);
+					this.p.add(reservationNouvelleConfPanel);
 				} catch (ObjetInconnu | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

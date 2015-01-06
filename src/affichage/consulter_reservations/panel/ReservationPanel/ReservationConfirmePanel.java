@@ -16,13 +16,15 @@ import donnees.Facture;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
 
-public class ReservationConfirmePanel extends PanelReservation {
+public class ReservationConfirmePanel extends JPanel {
 
 	private JButton salleButton;
-	public ReservationConfirmePanel(final Reservation reservation) throws ObjetInconnu, SQLException {
+	public ReservationConfirmePanel(final Reservation reservation, Color color) throws ObjetInconnu, SQLException {
 		
-		super(reservation);
+		super();
 		this.setLayout(new  BorderLayout());
+		
+		this.setBackground(color);
 		
 		salleButton = new JButton("voir");
 		salleButton.setBackground(new Color(129, 241, 142));

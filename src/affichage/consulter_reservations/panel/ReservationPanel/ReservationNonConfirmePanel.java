@@ -20,15 +20,16 @@ import donnees.Facture;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
 
-public class ReservationNonConfirmePanel extends PanelReservation {
+public class ReservationNonConfirmePanel extends JPanel {
 
 	private JButton salleButton  = new JButton("voir");;
 	private JButton supprimerSalleButton  = new JButton("Suppr");;
 	
-	public ReservationNonConfirmePanel(final Reservation reservation) throws ObjetInconnu, SQLException {
+	public ReservationNonConfirmePanel(final Reservation reservation, Color color) throws ObjetInconnu, SQLException {
 		
-		super(reservation);
+		super();
 		this.setLayout(new  BorderLayout());
+		this.setBackground(color);
 		
 		Date dateTempsReserv = new Date();
 		GregorianCalendar calendar = new java.util.GregorianCalendar();

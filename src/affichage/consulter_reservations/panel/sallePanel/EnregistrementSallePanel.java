@@ -16,6 +16,7 @@ public class EnregistrementSallePanel extends SallePanel{
 
 	public EnregistrementSallePanel(Reservation reservation, Date jourHeure, Dialog dialog, Salle salle) throws ObjetInconnu, SQLException {
 		super(reservation, jourHeure, Salle.type.ENREGISTREMENT, dialog, salle);
-		this.setBackground(new Color(26, 97, 189));
+		this.color = new Color(26, 97, 189);
+		this.setBackground(color);
 	}
 }

@@ -1,5 +1,6 @@
 package affichage.consulter_reservations.panel;
 
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.GridLayout;
 import java.sql.SQLException;

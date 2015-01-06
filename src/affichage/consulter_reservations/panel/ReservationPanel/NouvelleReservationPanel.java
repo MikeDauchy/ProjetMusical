@@ -1,6 +1,7 @@
 package affichage.consulter_reservations.panel.ReservationPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -24,17 +25,20 @@ import fabriques.donnes.FactureFactory;
 import fabriques.donnes.ReservationFactory;
 import fabriques.donnes.SalleFactory;
 
-public class NouvelleReservationPanel extends PanelReservation{
+public class NouvelleReservationPanel extends JPanel{
 
 	private JButton salleButton;
 	private JButton supprimerSalleButton;
 	private Date dateDebut; 
 	private Salle salle;
 	private Reservation reservation;
+	private Color color;
 	
-	public NouvelleReservationPanel(Reservation reservation, Date dateDebut, Salle salle) throws ObjetInconnu, SQLException {
-		super(reservation);
+	public NouvelleReservationPanel(Reservation reservation, Date dateDebut, Salle salle, Color color) throws ObjetInconnu, SQLException {
+		super();
 		this.setLayout(new  BorderLayout());
+		this.color = color;
+		this.setBackground(color);
 		
 		this.dateDebut = dateDebut;
 		this.salle = salle;
@@ -101,7 +105,7 @@ public class NouvelleReservationPanel extends PanelReservation{
 			
 			this.removeAll();
 			try {
-				this.add(new ReservationNonConfirmePanel(reservation));
+				this.add(new ReservationNonConfirmePanel(reservation, color));
 			} catch (ObjetInconnu e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
