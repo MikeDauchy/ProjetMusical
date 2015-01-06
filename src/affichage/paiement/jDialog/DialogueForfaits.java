@@ -49,16 +49,15 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 
 	//les champs forfaits
-	JTextField fieldNbHeuresDispo = new JTextField(20);
 	JTextField fieldDateDebutF = new JTextField (20);
 	JTextField fieldCreditF = new JTextField (20);
 	JTextField fieldDateFinF = new JTextField (20);
-	ComboBoxSalle comboBoxSalle = new ComboBoxSalle();
-	ComboBoxHeure comboBoxHeure = new ComboBoxHeure();
-	ComboBoxValidite comboBoxValidite = new ComboBoxValidite();
+	JTextField fieldSalleF = new JTextField(20);
+
 
 	// les boutons forfaits
 	JButton validF = new JButton ("Valider");
+	JButton annulF = new JButton ("Annuler");
 
 	public DialogueForfaits(JDialog dialog,Client client,Reservation reservation){
 
@@ -83,31 +82,25 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 		listForfaits.setCellRenderer(maListForfaitsCellRenderer);
 
 		//Construction des text field forfait pour saisie ou affichage
-		JLabel labelNbHeuresDispo = new JLabel ("Nombre d'heures : ");
 		JLabel labelSalleF = new JLabel ("Salle : ");
-		JLabel labelValiditeF =  new JLabel("Validite : ");
 		JLabel labelCreditF = new JLabel("Credit : ");
 		JLabel labelDateDebutF = new JLabel ("Date début : ");
 		JLabel labelDateFinF = new JLabel ("Date fin : ");
 
-		fieldNbHeuresDispo.setEditable(false);
+		fieldSalleF.setEditable(false);
 		fieldDateDebutF.setEditable(false);
 		fieldCreditF.setEditable(false);
 		fieldDateFinF.setEditable(false);
 
 		//on met les labels et les fields forfaits dans des panels
 		JPanel lesLabelsF = new JPanel(new GridLayout (6,2));
-		lesLabelsF.add (labelNbHeuresDispo);
 		lesLabelsF.add(labelSalleF);
-		lesLabelsF.add(labelValiditeF);
 		lesLabelsF.add (labelCreditF);
 		lesLabelsF.add (labelDateDebutF);
 		lesLabelsF.add (labelDateFinF);
 		lesLabelsF.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 		JPanel lesFieldsF = new JPanel(new GridLayout (6,2));
-		lesFieldsF.add(comboBoxHeure);
-		lesFieldsF.add(comboBoxSalle);
-		lesFieldsF.add(comboBoxValidite);
+		lesFieldsF.add(fieldSalleF);
 		lesFieldsF.add (fieldCreditF);
 		lesFieldsF.add(fieldDateDebutF);
 		lesFieldsF.add(fieldDateFinF);
@@ -116,6 +109,7 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 		//construction d'un panel pour mettre les 2 boutons forfait
 		JPanel pboutonsF = new JPanel(new GridLayout(1,0));
 		pboutonsF.add (validF);
+		pboutonsF.add(annulF);
 		pboutonsF.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 		JPanel formF = new JPanel (new BorderLayout());
@@ -147,6 +141,7 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 		add (panelDroite);
 
 		validF.addActionListener(this);
+		annulF.addActionListener(this);
 
 		listForfaits.addListSelectionListener(this);
 
@@ -175,6 +170,8 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}else if (o==annulF){
+			dialog.setVisible(false);
 		}else{
 			return;
 		}
@@ -187,8 +184,7 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 		Forfait forfait = (Forfait) listForfaits.getSelectedValue();
 		if(forfait !=null){
 			forfaitSelectionne = forfait;
-			comboBoxHeure.SelectItem(Integer.toString(forfaitSelectionne.getNbHeure()));
-			comboBoxSalle.SelectItem(forfaitSelectionne.getTypeSalle().toString());
+			fieldSalleF.setText(forfaitSelectionne.getTypeSalle().toString());
 			fieldCreditF.setText(Integer.toString(forfaitSelectionne.getNbHeure())+"h");
 			fieldDateDebutF.setText(formatter.format(forfaitSelectionne.getDateDebut()));
 			fieldDateFinF.setText(formatter.format(forfaitSelectionne.getDateFin()));

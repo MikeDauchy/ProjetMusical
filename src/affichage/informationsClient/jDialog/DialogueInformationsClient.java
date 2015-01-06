@@ -8,7 +8,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,8 +70,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	DefaultListModel modelListClient = new DefaultListModel();
 	JList listClients = new JList(modelListClient);
 
-
-
 	//les champs clients
 	JTextField fieldNom = new JTextField (20);
 	JTextField fieldPrenom = new JTextField(20);
@@ -91,15 +88,15 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	DefaultListModel modelListForfait = new DefaultListModel();
 	JList listForfaits = new JList(modelListForfait);
 
-	//les champs r�ervations
+	//les champs réservations
 	JTextField fieldDateR = new JTextField (20);
-	JTextField fieldExpirationR = new JTextField (20);
+	JTextField fieldNbHeuresR = new JTextField (20);
 	JTextField fieldHoraire = new JTextField(20);
 	JTextField fieldSalleR = new JTextField(20);
 	JTextField fieldEtatR = new JTextField(20);
 
-	// les boutons r�servations
-	JButton confR = new JButton ("Valider");
+	// les boutons réservations
+	JButton confR = new JButton ("Payer");
 	JButton annulR = new JButton ("Annuler");
 
 	//les champs forfaits
@@ -114,7 +111,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 	// les boutons forfaits
 	JButton createF = new JButton ("Creer");
-	JButton updateF = new JButton ("Modifier");
 
 	//Entree entreeSelectionne;
 
@@ -177,7 +173,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		listEntreesScrollPane.setMinimumSize (new Dimension (200,200));
 		listEntreesScrollPane.setBorder (BorderFactory.createTitledBorder (
 				BorderFactory.createLineBorder (Color.cyan),
-				"Liste des clients"));
+				"Clients"));
 		listClients .setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
 
 		//panel de gauche
@@ -194,14 +190,14 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 		//construction des text field réservations pour saisie ou affichage
 		JLabel labelDateR = new JLabel ("Date : ");
-		JLabel labelExpirationR = new JLabel ("Expiration : ");
+		JLabel labelExpirationR = new JLabel ("Nombre d'heures : ");
 		JLabel labelHoraireR = new JLabel ("Horaire : ");
 		JLabel labelSalleR = new JLabel ("Salle : ");
 		JLabel labelEtat = new JLabel ("Etat : ");
 
 		//mise en place de l'interdiction d'ecriture dans les jtextfield de reservations
 		fieldDateR.setEditable(false);
-		fieldExpirationR.setEditable(false);
+		fieldNbHeuresR.setEditable(false);
 		fieldHoraire.setEditable(false);
 		fieldSalleR.setEditable(false);
 		fieldEtatR.setEditable(false);
@@ -220,7 +216,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		fieldCreditF.setEditable(false);
 		fieldDateFinF.setEditable(false);
 
-		//on met les labels et les fields r�servations dans des panels
+		//on met les labels et les fields réservations dans des panels
 		JPanel lesLabelsR = new JPanel(new GridLayout (5,2));
 		lesLabelsR.add (labelDateR);
 		lesLabelsR.add (labelExpirationR);
@@ -230,7 +226,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		lesLabelsR.setBorder(BorderFactory.createEmptyBorder(20,10,10,10));
 		JPanel lesFieldsR = new JPanel(new GridLayout (5,2));
 		lesFieldsR.add (fieldDateR);
-		lesFieldsR.add(fieldExpirationR);
+		lesFieldsR.add(fieldNbHeuresR);
 		lesFieldsR.add(fieldHoraire);
 		lesFieldsR.add (fieldSalleR);
 		lesFieldsR.add(fieldEtatR);
@@ -268,7 +264,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		//construction d'un panel pour mettre les 2 boutons forfait
 		JPanel pboutonsF = new JPanel(new GridLayout(1,0));
 		pboutonsF.add (createF);
-		pboutonsF.add (updateF);
 		pboutonsF.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 		JPanel formF = new JPanel (new BorderLayout());
@@ -313,8 +308,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		add (panelGauche, BorderLayout.WEST);
 		add (panelDroite, BorderLayout.EAST);
 		
-
-
 		// Ajout des action listener
 		addC.addActionListener(this);
 		deleteC.addActionListener(this);
@@ -322,15 +315,11 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		confR.addActionListener(this);
 		annulR.addActionListener(this);
 		createF.addActionListener(this);
-		updateF.addActionListener(this);
 
 		// Ajout listSelectionListener
 		listClients.addListSelectionListener(this);
 		listReservations.addListSelectionListener(this);
 		listForfaits.addListSelectionListener(this);
-
-
-
 
 		setVisible(true);
 
@@ -376,6 +365,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				dialogPaiementReservation.setLocationRelativeTo(dialog);
 				dialogPaiementReservation.pack();
 				dialogPaiementReservation.setVisible(true);
+				loadListReservation();
+				loadListForfaits();
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -419,26 +410,6 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		}else if(o== updateF) {
-			// Mise à jour du forfait
-			try {
-				modelListForfait.removeElement(forfaitSelectionne);
-				forfaitSelectionne.setIdClient(forfaitSelectionne.getIdClient());
-				forfaitSelectionne.setDateDebut(formatter.parse(fieldDateDebutF.getText()));
-				forfaitSelectionne.setDateDebut(formatter.parse(fieldDateDebutF.getText()));
-				forfaitSelectionne.setNbHeure(comboBoxHeure.getTextComboBoxHeure());
-				ForfaitFactory.getInstance().update(forfaitSelectionne);
-				modelListForfait.addElement(forfaitSelectionne);
-			} catch (SQLException e1) {
-				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-				e1.printStackTrace();
-			} catch (ObjetInconnu e1) {
-				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
 		}else {
 			return;
 		}
@@ -451,7 +422,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		if (o == listClients){
 			// Gestion de la JList Clients
 			ClearReservation();
-			ClearForfait();
+			ClearForfaits();
 			// On récupère le client selectionné
 			Client client = (Client) listClients.getSelectedValue();
 			clientSelectionne = client;
@@ -460,43 +431,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			fieldNumero.setText(client.getNumTel());
 			fieldPtFidelite.setText(Integer.toString((client.getPointFidelite())));
 
-			try {
-				//On charge la JList reservations
-				List<Reservation> lesReservations = clientSelectionne.getListReservations();
-				for(Reservation e : lesReservations){
-					modelListReservation.addElement(e);
-				}
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				System.out.println("sql");
+			loadListReservation();
+			loadListForfaits();
 
-			} catch (ObjetInconnu e1) {
-				// TODO Auto-generated catch block
-				//				System.out.println(e1.getMessage());
-			}
-			try{
-				//On charge la JList Forfaits
-				List<Forfait> lesForfaits = clientSelectionne.getListFofaits();
-				for(Forfait e : lesForfaits){
-					modelListForfait.addElement(e);
-				}
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				System.out.println("sql");
-
-			} catch (ObjetInconnu e1) {
-				// TODO Auto-generated catch block
-				//				System.out.println(e1.getMessage());
-			}
-
-
-			//On remplit le renderer Réservations
-			ListCellRenderer maListReservationsCellRenderer = new ReservationsListCellRenderer();
-			listReservations.setCellRenderer(maListReservationsCellRenderer);
-
-			//On remplit le renderer Forfait
-			ListCellRenderer maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
-			listForfaits.setCellRenderer(maListForfaitsCellRenderer);
 		}else if(o==listReservations){
 			// Gestion de la JList reservations
 
@@ -505,9 +442,12 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 			//Si il y a une reservation
 			if(reservation != null){
+				// On active le bouton d'annulation
+				annulR.setEnabled(true);
+				// On récupère la réservation selectionné
 				reservationSelectionne = reservation;
 				fieldDateR.setText(formatter.format(reservation.getDateDebut()));
-				fieldExpirationR.setText(formatter.format(reservation.getDateFin()));
+				fieldNbHeuresR.setText(Integer.toString(reservation.getNbHeure()));
 				fieldHoraire.setText(Integer.toString(reservation.getDateDebut().getHours())+"h -> "+Integer.toString(reservation.getDateFin().getHours())+"h" );
 				try {
 					salle = reservation.getSalle();
@@ -523,8 +463,10 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				try {
 					if (reservation.getFacture().isEstPaye()) {
 						fieldEtatR.setText("Validé");
+						confR.setEnabled(false);
 					} else {
-						fieldEtatR.setText("Non validé");;
+						fieldEtatR.setText("Non validé");
+						confR.setEnabled(true);
 					}
 				} catch (ObjetInconnu e) {
 					// TODO Auto-generated catch block
@@ -533,6 +475,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 			}
 		} else if(o== listForfaits) {
 			// Gestion de la JList forfaits
@@ -557,15 +500,8 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		fieldPrenom.setText("");
 		fieldNumero.setText("");
 		fieldPtFidelite.setText("");
-		fieldDateR.setText("");
-		fieldExpirationR.setText("");
-		fieldHoraire.setText("");
-		fieldSalleR.setText("");
-		fieldEtatR.setText("");
-		fieldCreditF.setText("");
-		fieldDateDebutF.setText("");
-		fieldDateFinF.setText("");
-		fieldNbHeuresDispo.setText("");
+		ClearReservation();
+		ClearForfaits();
 	}
 
 	public void ClearReservation(){
@@ -574,13 +510,17 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		modelListReservation.removeAllElements();
 		// On vide les JTextField reservations
 		fieldDateR.setText("");
-		fieldExpirationR.setText("");
+		fieldNbHeuresR.setText("");
 		fieldHoraire.setText("");
 		fieldSalleR.setText("");
 		fieldEtatR.setText("");
+		// On désactive le bouton de paiement et annulation
+		confR.setEnabled(false);
+		annulR.setEnabled(false);
 	}
+	
 
-	public void ClearForfait(){
+	public void ClearForfaits(){
 		// On vide les JList forfaits
 		listForfaits.removeAll();
 		modelListForfait.removeAllElements();
@@ -589,6 +529,50 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		fieldDateDebutF.setText("");
 		fieldDateFinF.setText("");
 		fieldNbHeuresDispo.setText("");
+	}
+	
+	public void loadListReservation(){
+		//On nettoie la Jlist et les JtextFields Réservations
+		ClearReservation();
+		try {
+			//On charge la JList Réservations
+			List<Reservation> lesReservations = clientSelectionne.getListReservations();
+			for(Reservation e : lesReservations){
+				modelListReservation.addElement(e);
+			}
+		} catch (ObjetInconnu e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//On remplit le renderer Réservations
+		ListCellRenderer maListReservationsCellRenderer = new ReservationsListCellRenderer();
+		listReservations.setCellRenderer(maListReservationsCellRenderer);
+	}
+	
+	public void loadListForfaits(){
+		//On nettoie la Jlist et les JtextFields Forfaits
+		ClearForfaits();
+		try{
+			//On charge la JList Forfaits
+			List<Forfait> lesForfaits = clientSelectionne.getListFofaits();
+			for(Forfait e : lesForfaits){
+				modelListForfait.addElement(e);
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			System.out.println("sql");
+
+		} catch (ObjetInconnu e1) {
+			// TODO Auto-generated catch block
+			//				System.out.println(e1.getMessage());
+		}
+
+		//On remplit le renderer Forfait
+		ListCellRenderer maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
+		listForfaits.setCellRenderer(maListForfaitsCellRenderer);
 	}
 
 }
