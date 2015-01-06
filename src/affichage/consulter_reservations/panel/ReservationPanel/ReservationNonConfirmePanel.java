@@ -1,10 +1,14 @@
 package affichage.consulter_reservations.panel.ReservationPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -16,16 +20,29 @@ import donnees.Facture;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
 
-public class ReservationNonConfirmePanel extends JPanel {
+public class ReservationNonConfirmePanel extends PanelReservation {
 
-	private JButton salleButton;
-	private JButton supprimerSalleButton;
+	private JButton salleButton  = new JButton("voir");;
+	private JButton supprimerSalleButton  = new JButton("Suppr");;
 	
-	public ReservationNonConfirmePanel(final Reservation reservation) {
+	public ReservationNonConfirmePanel(final Reservation reservation) throws ObjetInconnu, SQLException {
 		
+		super(reservation);
 		this.setLayout(new  BorderLayout());
 		
-		salleButton = new JButton("voir");
+		Date dateTempsReserv = new Date();
+		GregorianCalendar calendar = new java.util.GregorianCalendar();
+		calendar.setTime(dateTempsReserv);
+		calendar.add(Calendar.DATE, 7);
+		dateTempsReserv = calendar.getTime();
+		if(reservation.getDateDebut().getTime() < dateTempsReserv.getTime()){
+			salleButton.setBackground(new Color(241, 129, 129));
+			supprimerSalleButton.setBackground(new Color(241, 129, 129));
+		}else{
+			salleButton.setBackground(new Color(129, 163, 241));
+			supprimerSalleButton.setBackground(new Color(129, 163, 241));
+		}
+		
 		salleButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -47,7 +64,6 @@ public class ReservationNonConfirmePanel extends JPanel {
 		});
 		
 		
-		supprimerSalleButton = new JButton("Suppr");
 		supprimerSalleButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

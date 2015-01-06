@@ -24,7 +24,7 @@ import fabriques.donnes.FactureFactory;
 import fabriques.donnes.ReservationFactory;
 import fabriques.donnes.SalleFactory;
 
-public class NouvelleReservationPanel extends JPanel{
+public class NouvelleReservationPanel extends PanelReservation{
 
 	private JButton salleButton;
 	private JButton supprimerSalleButton;
@@ -32,8 +32,8 @@ public class NouvelleReservationPanel extends JPanel{
 	private Salle salle;
 	private Reservation reservation;
 	
-	public NouvelleReservationPanel(Reservation reservation, Date dateDebut, Salle salle) {
-		
+	public NouvelleReservationPanel(Reservation reservation, Date dateDebut, Salle salle) throws ObjetInconnu, SQLException {
+		super(reservation);
 		this.setLayout(new  BorderLayout());
 		
 		this.dateDebut = dateDebut;
@@ -100,7 +100,12 @@ public class NouvelleReservationPanel extends JPanel{
 			}
 			
 			this.removeAll();
-			this.add(new ReservationNonConfirmePanel(reservation));
+			try {
+				this.add(new ReservationNonConfirmePanel(reservation));
+			} catch (ObjetInconnu e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			this.revalidate();
 		}
 	}

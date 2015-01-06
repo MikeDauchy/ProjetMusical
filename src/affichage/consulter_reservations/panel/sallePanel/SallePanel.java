@@ -60,7 +60,12 @@ public class SallePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			if (!p.estPaye) {
 				this.p.removeAll();
-				this.p.add(new NouvelleReservationPanel(reservation, heure, salle));
+				try {
+					this.p.add(new NouvelleReservationPanel(reservation, heure, salle));
+				} catch (ObjetInconnu | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				p.revalidate();
 				p.dialog.pack();
 				p.dialog.setLocationRelativeTo(null);

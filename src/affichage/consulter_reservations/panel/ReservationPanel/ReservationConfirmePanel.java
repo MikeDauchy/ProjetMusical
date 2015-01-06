@@ -1,6 +1,7 @@
 package affichage.consulter_reservations.panel.ReservationPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,14 +16,16 @@ import donnees.Facture;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
 
-public class ReservationConfirmePanel extends JPanel {
+public class ReservationConfirmePanel extends PanelReservation {
 
 	private JButton salleButton;
-	public ReservationConfirmePanel(final Reservation reservation) {
+	public ReservationConfirmePanel(final Reservation reservation) throws ObjetInconnu, SQLException {
 		
+		super(reservation);
 		this.setLayout(new  BorderLayout());
 		
 		salleButton = new JButton("voir");
+		salleButton.setBackground(new Color(129, 241, 142));
 		salleButton.addActionListener(new ActionListener() {
 			
 			@Override
