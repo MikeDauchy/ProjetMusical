@@ -70,7 +70,7 @@ public class SallePanel extends JPanel {
 					JPanel reservationNouvelleConfPanel = new NouvelleReservationPanel(reservation, heure, salle, color);
 					reservationNouvelleConfPanel.setBackground(p.color);
 					this.p.add(reservationNouvelleConfPanel);
-				} catch (ObjetInconnu | SQLException e1) {
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}

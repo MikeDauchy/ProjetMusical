@@ -81,13 +81,13 @@ public class DialogueEditerReservation extends JPanel {
 	private Panel panelChoixHeures = new Panel();
 	private JLabel labelChoixHeure = new JLabel("Selectionnez l'heure de début :");
 	private Integer labelsHeures[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
-	private JComboBox<Integer> ComboHoraire = new JComboBox<Integer>(labelsHeures);
+	private JComboBox ComboHoraire = new JComboBox(labelsHeures);
 	
 	//Choix type salle
 	private Panel panelChoixSalle = new Panel();
 	private JLabel labelChoixSalle = new JLabel("Selectionnez le type de salle :");
 	private String labelsSalle[] = {Salle.type.PETITE.toString(), Salle.type.MOYENNE.toString(), Salle.type.ENREGISTREMENT.toString()};
-	private JComboBox<String> ComboSalle = new JComboBox<String>(labelsSalle);
+	private JComboBox ComboSalle = new JComboBox(labelsSalle);
 	
 	//Date picker
 	private UtilDateModel model = new UtilDateModel();
@@ -175,11 +175,11 @@ public class DialogueEditerReservation extends JPanel {
 				try {
 					try {
 						pressValider();
-					} catch (CreationObjetException | ObjetInconnu e1) {
+					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-				} catch (SQLException e1) {
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -243,7 +243,7 @@ public class DialogueEditerReservation extends JPanel {
 			Date dateConseille = gestionReservation.conseillerDateReservation(labelsHeures[ComboHoraire.getSelectedIndex()], nbHeure, salle.getTypeSalle(), nbRepetition);
 			dateModel = dateConseille;
 			creationDatePicker(dateConseille);
-		} catch (SQLException | ObjetInconnu e) {
+		} catch (Exception e) {
 			labelMessage.setText("Tous les creneaux avec votre configuration sont pris");
 			labelMessage.setForeground(Color.RED);
 			e.printStackTrace();
@@ -314,7 +314,7 @@ public class DialogueEditerReservation extends JPanel {
 					gestionReservation.reserverTypeSalle(dateDebut, dateFin, nbHeure, salle.getTypeSalle(), client, nbRepetition);
 					labelMessage.setForeground(Color.GREEN);
 					labelMessage.setText("Reservation effectuée !");
-				} catch (SalleDejaReserveException | CreationObjetException | ObjetExistant | SQLException e) {
+				} catch (Exception e) {
 					labelMessage.setText("Le crenau choisis est déjà pris");
 					labelMessage.setForeground(Color.RED);
 					e.printStackTrace();

@@ -140,7 +140,7 @@ public class GestionReservation {
 			try {
 				reserver(dateDebut, dateFin, nbHeure, salle, client, nbRepeter);
 				return; //on a reussi a reserver avec cette salle
-			} catch (SalleDejaReserveException | CreationObjetException | ObjetExistant | SQLException e) { //on continue avec une autre salle
+			} catch (Exception e) { //on continue avec une autre salle
 				}
 		}
 		

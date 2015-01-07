@@ -30,7 +30,7 @@ public class ReservationsListCellRenderer implements ListCellRenderer{
 			else if((((Reservation)value).getFacture().isEstPaye())){
 				renderer.setForeground(Color.green);
 			}
-		} catch (ObjetInconnu | SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
