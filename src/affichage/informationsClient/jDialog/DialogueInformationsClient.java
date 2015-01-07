@@ -30,6 +30,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import metier.GestionInfoClient;
+import metier.GestionReservation;
 import affichage.informationsClient.jComboBox.ComboBoxHeure;
 import affichage.informationsClient.jComboBox.ComboBoxSalle;
 import affichage.informationsClient.jComboBox.ComboBoxValidite;
@@ -54,63 +56,64 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 
 	private static final long serialVersionUID = 1L;
 
-	Client clientSelectionne;
-	Reservation reservationSelectionne;
-	Forfait forfaitSelectionne;
-	Salle salle;
-	Calendar cal = GregorianCalendar.getInstance();
+	private GestionInfoClient gestclient = new GestionInfoClient();
+	private Client clientSelectionne;
+	private Reservation reservationSelectionne;
+	private Forfait forfaitSelectionne;
+	private Salle salle;
 
-	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 
-	JDialog dialog;
-	JDialog dialogPaiementReservation;
+	private SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+
+	private JDialog dialog;
+	private JDialog dialogPaiementReservation;
 
 	// partie gauche de la fenetre : gestion des entrees
 	//les listes des objets
-	DefaultListModel modelListClient = new DefaultListModel();
-	JList listClients = new JList(modelListClient);
+	private DefaultListModel modelListClient = new DefaultListModel();
+	private JList listClients = new JList(modelListClient);
 
 	//les champs clients
-	JTextField fieldNom = new JTextField (20);
-	JTextField fieldPrenom = new JTextField(20);
-	JTextField fieldNumero = new JTextField(20);
-	JTextField fieldPtFidelite = new JTextField(20);
+	private JTextField fieldNom = new JTextField (20);
+	private JTextField fieldPrenom = new JTextField(20);
+	private JTextField fieldNumero = new JTextField(20);
+	private JTextField fieldPtFidelite = new JTextField(20);
 
 	// les boutons clients
-	JButton addC = new JButton ("Ajouter");
-	JButton deleteC = new JButton ("Supprimer");
-	JButton clearC = new JButton ("Clear");
+	private JButton addC = new JButton ("Ajouter");
+	private JButton deleteC = new JButton ("Supprimer");
+	private JButton clearC = new JButton ("Clear");
 
 	//partie droite de la fenetre : gestion des reservation
 	//la liste des objets
-	DefaultListModel modelListReservation = new DefaultListModel();
-	JList listReservations = new JList(modelListReservation);
-	DefaultListModel modelListForfait = new DefaultListModel();
-	JList listForfaits = new JList(modelListForfait);
+	private DefaultListModel modelListReservation = new DefaultListModel();
+	private JList listReservations = new JList(modelListReservation);
+	private DefaultListModel modelListForfait = new DefaultListModel();
+	private JList listForfaits = new JList(modelListForfait);
 
 	//les champs réservations
-	JTextField fieldDateR = new JTextField (20);
-	JTextField fieldNbHeuresR = new JTextField (20);
-	JTextField fieldHoraire = new JTextField(20);
-	JTextField fieldSalleR = new JTextField(20);
-	JTextField fieldEtatR = new JTextField(20);
+	private JTextField fieldDateR = new JTextField (20);
+	private JTextField fieldNbHeuresR = new JTextField (20);
+	private JTextField fieldHoraire = new JTextField(20);
+	private JTextField fieldSalleR = new JTextField(20);
+	private JTextField fieldEtatR = new JTextField(20);
 
 	// les boutons réservations
-	JButton confR = new JButton ("Payer");
-	JButton annulR = new JButton ("Annuler");
+	private JButton confR = new JButton ("Payer");
+	private JButton annulR = new JButton ("Annuler");
 
 	//les champs forfaits
-	JTextField fieldNbHeuresDispo = new JTextField(20);
-	JTextField fieldDateDebutF = new JTextField (20);
-	JTextField fieldCreditF = new JTextField (20);
-	JTextField fieldDateFinF = new JTextField (20);
-	ComboBoxSalle comboBoxSalle = new ComboBoxSalle();
-	ComboBoxHeure comboBoxHeure = new ComboBoxHeure();
-	ComboBoxValidite comboBoxValidite = new ComboBoxValidite();
+	private JTextField fieldNbHeuresDispo = new JTextField(20);
+	private JTextField fieldDateDebutF = new JTextField (20);
+	private JTextField fieldCreditF = new JTextField (20);
+	private JTextField fieldDateFinF = new JTextField (20);
+	private ComboBoxSalle comboBoxSalle = new ComboBoxSalle();
+	private ComboBoxHeure comboBoxHeure = new ComboBoxHeure();
+	private ComboBoxValidite comboBoxValidite = new ComboBoxValidite();
 
 
 	// les boutons forfaits
-	JButton createF = new JButton ("Creer");
+	private JButton createF = new JButton ("Creer");
 
 	//Entree entreeSelectionne;
 
@@ -125,9 +128,12 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			modelListClient.addElement(e);
 		}
 
+		fieldPtFidelite.setEditable(false);
+
 		//On met notre render Client
 		ListCellRenderer maListClientsCellRenderer = new ClientsListCellRenderer();
 		listClients.setCellRenderer(maListClientsCellRenderer);
+
 
 		//construction du panel de gauche
 
@@ -307,7 +313,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		setLayout (new BorderLayout());
 		add (panelGauche, BorderLayout.WEST);
 		add (panelDroite, BorderLayout.EAST);
-		
+
 		// Ajout des action listener
 		addC.addActionListener(this);
 		deleteC.addActionListener(this);
@@ -322,6 +328,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		listForfaits.addListSelectionListener(this);
 
 		setVisible(true);
+		dialog.setResizable(false);
 
 	}
 
@@ -329,28 +336,36 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	public void actionPerformed(ActionEvent e) {
 		Object o= e.getSource();
 		if(o == addC ) {
-			try{
-				Client client = ClientFactory.getInstance().creer(fieldNom.getText(), fieldPrenom.getText(),fieldNumero.getText(),Integer.parseInt(fieldPtFidelite.getText()));
-				modelListClient.addElement(client);
-			}catch(ObjetExistant exception){
-				JOptionPane.showMessageDialog(dialog, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-			} catch (NumberFormatException e1) {
-				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-				e1.printStackTrace();
-			} catch (CreationObjetException e1) {
-				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-			} catch (SQLException e1) {
-				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-			}
 
+			if((!(fieldNom.getText().length()==0 || fieldPrenom.getText().length()==0 || fieldNumero.getText().length()==0)) && fieldNom.getText().matches("[a-zA-Z]*") && fieldPrenom.getText().matches("[a-zA-Z]*")){
+				if(fieldNumero.getText().matches("[0-9]*")&& fieldNumero.getText().length()==10){
+					try{
+						Client client = ClientFactory.getInstance().creer(fieldNom.getText(), fieldPrenom.getText(),fieldNumero.getText(),0);
+						modelListClient.addElement(client);
+					}catch(ObjetExistant exception){
+						JOptionPane.showMessageDialog(dialog, exception.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+					} catch (CreationObjetException e1) {
+						JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else{
+					JOptionPane.showMessageDialog(dialog, "Veuillez mettre une chaine d'une longueur de 10 chiffres pour le numéro", "Erreur", JOptionPane.ERROR_MESSAGE);
+				}
+			}else{
+				JOptionPane.showMessageDialog(dialog, "Veuillez vérifier la validité des champs", "Erreur", JOptionPane.ERROR_MESSAGE);
+			}
 
 		} else if(o== deleteC) {
 			// Supprimer client
 			try {
-				modelListClient.removeElement(clientSelectionne);
-				ClientFactory.getInstance().supprimer(clientSelectionne);
+				gestclient.supprimerClient(clientSelectionne);
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+
 			} catch (ObjetInconnu e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
@@ -360,7 +375,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		} else if(o== confR) {
 			try {
 				//JDialog pour le paiements des reservations non validé
-				dialogPaiementReservation = new JDialog (dialog, "Paiement reservation",true);
+				dialogPaiementReservation = new JDialog (dialog, "Paiement facture",true);
 				dialogPaiementReservation.getContentPane().add(new DialoguePaiement(dialogPaiementReservation,reservationSelectionne), BorderLayout.CENTER);
 				dialogPaiementReservation.setLocationRelativeTo(dialog);
 				dialogPaiementReservation.pack();
@@ -368,11 +383,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				loadListReservation();
 				loadListForfaits();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (ObjetInconnu e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 
 		} else if(o== annulR) {
@@ -382,33 +395,33 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				modelListReservation.removeElement(reservationSelectionne);
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-				e1.printStackTrace();
 			} catch (ObjetInconnu e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 		}else if(o== createF) {
 			// Creation forfait
-			Date dateDebut;
-			Date dateFin;
+			Date dateDebut=null;
+			Date dateFin=null;
+			Calendar cal = GregorianCalendar.getInstance();
 			dateDebut = cal.getTime();
+			if (comboBoxValidite.getTextComboBoxHeure().equals("3 mois")){
+				cal.add(Calendar.MONTH, 3);
 
-			cal.add(Calendar.MONTH, 3);
+			}else if(comboBoxValidite.getTextComboBoxHeure().equals("6 mois")){
+				cal.add(Calendar.MONTH, 6);
+			}
 			dateFin = cal.getTime();
 			try {
 				Forfait forfait =ForfaitFactory.getInstance().creer(clientSelectionne.getIdClient(),comboBoxHeure.getTextComboBoxHeure(), dateDebut, dateFin, 0.0, Salle.type.valueOf(comboBoxSalle.getTextComboBoxSalle()));
 				modelListForfait.addElement(forfait);
 			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (CreationObjetException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (ObjetExistant e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 		}else {
 			return;
@@ -452,11 +465,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				try {
 					salle = reservation.getSalle();
 				} catch (ObjetInconnu e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 				}
 				fieldSalleR.setText(salle.getDescription());
 
@@ -469,13 +480,11 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 						confR.setEnabled(true);
 					}
 				} catch (ObjetInconnu e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 				}
-				
+
 			}
 		} else if(o== listForfaits) {
 			// Gestion de la JList forfaits
@@ -518,7 +527,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		confR.setEnabled(false);
 		annulR.setEnabled(false);
 	}
-	
+
 
 	public void ClearForfaits(){
 		// On vide les JList forfaits
@@ -530,10 +539,11 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		fieldDateFinF.setText("");
 		fieldNbHeuresDispo.setText("");
 	}
-	
+
 	public void loadListReservation(){
 		//On nettoie la Jlist et les JtextFields Réservations
 		ClearReservation();
+		
 		try {
 			//On charge la JList Réservations
 			List<Reservation> lesReservations = clientSelectionne.getListReservations();
@@ -541,17 +551,15 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				modelListReservation.addElement(e);
 			}
 		} catch (ObjetInconnu e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(dialog, "Aucune réservation associé à ce client", "Information", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 		//On remplit le renderer Réservations
 		ListCellRenderer maListReservationsCellRenderer = new ReservationsListCellRenderer();
 		listReservations.setCellRenderer(maListReservationsCellRenderer);
 	}
-	
+
 	public void loadListForfaits(){
 		//On nettoie la Jlist et les JtextFields Forfaits
 		ClearForfaits();
@@ -562,12 +570,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				modelListForfait.addElement(e);
 			}
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			System.out.println("sql");
-
+			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		} catch (ObjetInconnu e1) {
-			// TODO Auto-generated catch block
-			//				System.out.println(e1.getMessage());
+			JOptionPane.showMessageDialog(dialog, "Aucune forfait associé à ce client", "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		//On remplit le renderer Forfait

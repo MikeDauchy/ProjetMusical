@@ -23,8 +23,8 @@ public class ComboBoxValidite extends JPanel{
 	}
 
 
-	public int getTextComboBoxHeure(){
-		return Integer.parseInt(textComboBoxValidite=combo.getSelectedItem().toString());
+	public String getTextComboBoxHeure(){
+		return textComboBoxValidite=combo.getSelectedItem().toString();
 	}
 
 	public void SelectItem(String value){

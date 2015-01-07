@@ -32,32 +32,29 @@ import donnees.Client;
 import donnees.Forfait;
 import donnees.reservations.Reservation;
 import exceptions.accesAuDonnees.ObjetInconnu;
-import affichage.informationsClient.jComboBox.ComboBoxHeure;
-import affichage.informationsClient.jComboBox.ComboBoxSalle;
-import affichage.informationsClient.jComboBox.ComboBoxValidite;
 import affichage.informationsClient.listCellRenderer.ForfaitsListCellRenderer;
 
 public class DialogueForfaits extends JPanel implements ActionListener, ListSelectionListener{
 
-	Client client;
-	Reservation reservation;
-	GestionReservation gestReservation = new GestionReservation();
-	JDialog dialog;
-	DefaultListModel modelListForfait = new DefaultListModel();
-	JList listForfaits = new JList(modelListForfait);
-	Forfait forfaitSelectionne;
-	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+	private Client client;
+	private Reservation reservation;
+	private GestionReservation gestReservation = new GestionReservation();
+	private JDialog dialog;
+	private DefaultListModel modelListForfait = new DefaultListModel();
+	private JList listForfaits = new JList(modelListForfait);
+	private Forfait forfaitSelectionne;
+	private SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 
 	//les champs forfaits
-	JTextField fieldDateDebutF = new JTextField (20);
-	JTextField fieldCreditF = new JTextField (20);
-	JTextField fieldDateFinF = new JTextField (20);
-	JTextField fieldSalleF = new JTextField(20);
+	private JTextField fieldDateDebutF = new JTextField (20);
+	private JTextField fieldCreditF = new JTextField (20);
+	private JTextField fieldDateFinF = new JTextField (20);
+	private JTextField fieldSalleF = new JTextField(20);
 
 
 	// les boutons forfaits
-	JButton validF = new JButton ("Valider");
-	JButton annulF = new JButton ("Annuler");
+	private JButton validF = new JButton ("Valider");
+	private JButton annulF = new JButton ("Annuler");
 
 	public DialogueForfaits(JDialog dialog,Client client,Reservation reservation){
 
@@ -65,21 +62,8 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 		this.reservation = reservation;
 		this.dialog= dialog;
 
-		try {
-			List<Forfait> lesForfaits = this.client.getListFofaits();
-			for(Forfait e : lesForfaits){
-				modelListForfait.addElement(e);
-			}
-		} catch (ObjetInconnu e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		ListCellRenderer maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
-		listForfaits.setCellRenderer(maListForfaitsCellRenderer);
+		// On charge l'ensemble des forfaits du client
+		loadListForfaits(client);
 
 		//Construction des text field forfait pour saisie ou affichage
 		JLabel labelSalleF = new JLabel ("Salle : ");
@@ -146,6 +130,7 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 		listForfaits.addListSelectionListener(this);
 
 		setVisible(true);
+		dialog.setResizable(false);
 
 	}
 
@@ -190,6 +175,25 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 			fieldDateFinF.setText(formatter.format(forfaitSelectionne.getDateFin()));
 		}
 
+	}
+	
+	public void loadListForfaits(Client client){
+		//On nettoie la Jlist et les JtextFields Forfaits
+		try{
+			//On charge la JList Forfaits
+			List<Forfait> lesForfaits = client.getListFofaits();
+			for(Forfait e : lesForfaits){
+				modelListForfait.addElement(e);
+			}
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+		} catch (ObjetInconnu e1) {
+			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+		}
+
+		//On remplit le renderer Forfait
+		ListCellRenderer maListForfaitsCellRenderer = new ForfaitsListCellRenderer();
+		listForfaits.setCellRenderer(maListForfaitsCellRenderer);
 	}
 
 }

@@ -40,9 +40,11 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
 	private Dialog dialog;
-	JDialog dialogPaiementForfaits;
+	private JDialog dialogPaiementForfaits;
+	private JDialog dialogDetailsFacture;
 	private JCheckBox paiementCB, paiementForfait, paiementPtFidelite;
 	private JButton validPaiement = new JButton("Valider");
+	private JButton detailFacture = new JButton("Détails");
 	private Reservation reservation;
 	private GestionReservation gestReserv = new GestionReservation();
 
@@ -52,8 +54,13 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
 		this.reservation=reservation;
-
-
+		JLabel labelDateR = new JLabel ("Vous allez régler l'ensemble des réservations associé à la facture de cet réservation : ");
+		
+		JPanel detailsF = new JPanel (new BorderLayout());
+		detailsF.add (labelDateR, BorderLayout.WEST);
+		detailsF.add (detailFacture, BorderLayout.EAST);
+		detailsF.setBackground(new  Color(26, 162, 189));
+		
 		//Type de Paiement
 		JPanel panelPaiement = new JPanel();
 		panelPaiement.setBorder(BorderFactory.createTitledBorder("Types de paiement"));
@@ -70,15 +77,18 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 		panelPaiement.add(paiementPtFidelite);
 
 		JPanel content = new JPanel(new BorderLayout());
-		content.add(panelPaiement,BorderLayout.NORTH);
+		content.add(detailsF,BorderLayout.NORTH);
+		content.add(panelPaiement,BorderLayout.CENTER);
 		content.add(validPaiement,BorderLayout.SOUTH);
 
 		add(content, BorderLayout.CENTER);
 
 		//Ajout de l'action Listener sur le bouton Valider
 		validPaiement.addActionListener(this);
+		detailFacture.addActionListener(this);
 		dialog.pack();
 		dialog.setLocationRelativeTo(null);
+		dialog.setResizable(false);
 	}
 
 
@@ -126,9 +136,23 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 					JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 
 				}
-			}else{ 
-				return;
 			}
+		}else if(o==detailFacture){
+
+				try {
+					dialogDetailsFacture = new JDialog (dialog, "Liste des réservations",true);
+					dialogDetailsFacture.getContentPane().add(new DialogueReservations(dialogDetailsFacture,reservation.getFacture()));
+					dialogDetailsFacture.setLocationRelativeTo(dialog);
+					dialogDetailsFacture.pack();
+					dialogDetailsFacture.setVisible(true);
+				} catch (ObjetInconnu e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 		}else{
 			return;
 		}
