@@ -90,12 +90,12 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 		setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
 		labelTitre.setForeground(new Color(26, 162, 189));
-		boutonConsulterReservation.setForeground(Color.WHITE);
-		boutonEditerReservation.setForeground(Color.WHITE);
-		boutonInformationsClient.setForeground(Color.WHITE);
-		boutonConsulterReservation.setBackground(new Color(52, 52, 52));
-		boutonEditerReservation.setBackground(new Color(52, 52, 52));
-		boutonInformationsClient.setBackground(new Color(52, 52, 52));
+		boutonConsulterReservation.setForeground(new Color(52, 52, 52));
+		boutonEditerReservation.setForeground(new Color(52, 52, 52));
+		boutonInformationsClient.setForeground(new Color(52, 52, 52));
+		boutonConsulterReservation.setBackground(new Color(130, 185, 207));
+		boutonEditerReservation.setBackground(new Color(130, 185, 207));
+		boutonInformationsClient.setBackground(new Color(130, 185, 207));
 	}
 
 
