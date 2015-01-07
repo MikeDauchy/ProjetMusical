@@ -57,6 +57,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	private static final long serialVersionUID = 1L;
 
 	private GestionInfoClient gestclient = new GestionInfoClient();
+	private GestionReservation gestReserv = new GestionReservation();
 	private Client clientSelectionne;
 	private Reservation reservationSelectionne;
 	private Forfait forfaitSelectionne;
@@ -121,18 +122,10 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 	public DialogueInformationsClient ( JDialog dialog) throws Exception{
 
 		this.dialog = dialog;
-
-		//On charge la JList Client
-		List<Client> lesClients = ClientFactory.getInstance().lister();
-		for(Client e : lesClients){
-			modelListClient.addElement(e);
-		}
-
 		fieldPtFidelite.setEditable(false);
+		
+		loadListClients();
 
-		//On met notre render Client
-		ListCellRenderer maListClientsCellRenderer = new ClientsListCellRenderer();
-		listClients.setCellRenderer(maListClientsCellRenderer);
 
 
 		//construction du panel de gauche
@@ -363,11 +356,15 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 			// Supprimer client
 			try {
 				gestclient.supprimerClient(clientSelectionne);
+				ClearField();
+				listClients.removeAll();
+				modelListClient.removeAllElements();
+				loadListClients();
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 
 			} catch (ObjetInconnu e1) {
-				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(dialog, "Objet Inconnu", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 		} else if(o== clearC) {
 			// Nettoyer information fields client
@@ -391,8 +388,9 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		} else if(o== annulR) {
 			// Annuler réservation
 			try {
-				ReservationFactory.getInstance().supprimer(reservationSelectionne);
-				modelListReservation.removeElement(reservationSelectionne);
+				gestReserv.supprimerReservationSalle(reservationSelectionne);
+				ClearReservation();
+				loadListReservation();
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (ObjetInconnu e1) {
@@ -551,7 +549,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 				modelListReservation.addElement(e);
 			}
 		} catch (ObjetInconnu e1) {
-			JOptionPane.showMessageDialog(dialog, "Aucune réservation associé à ce client", "Information", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(dialog, "Aucune réservation(s) associé à ce client", "Information", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
@@ -572,7 +570,7 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 		} catch (ObjetInconnu e1) {
-			JOptionPane.showMessageDialog(dialog, "Aucune forfait associé à ce client", "Information", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(dialog, "Aucun forfait(s) associé à ce client", "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		//On remplit le renderer Forfait
@@ -580,4 +578,21 @@ public class DialogueInformationsClient extends JPanel implements ActionListener
 		listForfaits.setCellRenderer(maListForfaitsCellRenderer);
 	}
 
+	public void loadListClients(){
+		//On charge la JList Client
+		try {
+			List<Client> lesClients = ClientFactory.getInstance().lister();
+			for(Client e : lesClients){
+				modelListClient.addElement(e);
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+
+		//On met notre render Client
+		ListCellRenderer maListClientsCellRenderer = new ClientsListCellRenderer();
+		listClients.setCellRenderer(maListClientsCellRenderer);
+	}
 }

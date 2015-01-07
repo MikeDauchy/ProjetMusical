@@ -117,11 +117,10 @@ public class DialoguePaiement extends JPanel implements ActionListener{
 					dialogPaiementForfaits.setVisible(true);
 					dialog.setVisible(false);
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, "Erreur SQL", "Erreur", JOptionPane.ERROR_MESSAGE);
 				} catch (ObjetInconnu e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, "Aucun forfait(s) disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
+
 				}
 
 			}else if(paiementPtFidelite.isSelected()){

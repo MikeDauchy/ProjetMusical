@@ -126,6 +126,7 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 
 		validF.addActionListener(this);
 		annulF.addActionListener(this);
+		validF.setEnabled(false);
 
 		listForfaits.addListSelectionListener(this);
 
@@ -149,11 +150,9 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 					dialog.setVisible(false);
 				}
 			} catch (ObjetInconnu e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, "Aucun forfait(s) disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(dialog, "Erreur SQL", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 		}else if (o==annulF){
 			dialog.setVisible(false);
@@ -168,6 +167,7 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 	public void valueChanged(ListSelectionEvent arg0) {
 		Forfait forfait = (Forfait) listForfaits.getSelectedValue();
 		if(forfait !=null){
+			validF.setEnabled(true);
 			forfaitSelectionne = forfait;
 			fieldSalleF.setText(forfaitSelectionne.getTypeSalle().toString());
 			fieldCreditF.setText(Integer.toString(forfaitSelectionne.getNbHeure())+"h");
@@ -186,9 +186,9 @@ public class DialogueForfaits extends JPanel implements ActionListener, ListSele
 				modelListForfait.addElement(e);
 			}
 		} catch (SQLException e1) {
-			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(dialog, "Erreur SQL", "Erreur", JOptionPane.ERROR_MESSAGE);
 		} catch (ObjetInconnu e1) {
-			JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(dialog, "Aucun forfait(s) disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 
 		//On remplit le renderer Forfait
