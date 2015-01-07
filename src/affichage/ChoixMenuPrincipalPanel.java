@@ -79,7 +79,7 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 		boutonPanel.add(boutonConsulterReservation);
 		boutonPanel.add(boutonEditerReservation);
 		boutonPanel.add(boutonInformationsClient);
-
+		boutonPanel.setBackground(new Color(52, 52, 52));
 
 
 		setLayout( new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -90,7 +90,14 @@ public class ChoixMenuPrincipalPanel extends JPanel implements ActionListener {
 
 		setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-		labelTitre.setForeground(Color.blue);
+		labelTitre.setForeground(new  Color(26, 162, 189));
+		boutonConsulterReservation.setForeground(new Color(52, 52, 52));
+		boutonEditerReservation.setForeground(new Color(52, 52, 52));
+		boutonInformationsClient.setForeground(new Color(52, 52, 52));
+		boutonConsulterReservation.setBackground(new Color(255, 255, 255));
+		boutonEditerReservation.setBackground(new Color(255, 255, 255));
+		boutonInformationsClient.setBackground(new Color(255, 255, 255));
+		this.setBackground(new Color(52, 52, 52));
 	}
 
 

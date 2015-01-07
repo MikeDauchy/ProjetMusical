@@ -50,8 +50,8 @@ public class DialogueConsulterReservation extends JPanel{
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
 		
-		btnJourPrec.setBackground(new Color(194, 194, 194));
-		btnJourSuiv.setBackground(new Color(194, 194, 194));
+		btnJourPrec.setBackground(new Color(250, 250, 250));
+		btnJourSuiv.setBackground(new Color(250, 250, 250));
 		
 		Date dateRef = new Date();
 		dateRef.setHours(1);
