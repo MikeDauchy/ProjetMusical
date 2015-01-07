@@ -45,6 +45,7 @@ public class NouvelleReservationPanel extends JPanel{
 		this.reservation = reservation;
 		
 		supprimerSalleButton = new JButton("suppr");
+		supprimerSalleButton.setBackground(new Color(194, 194, 194));
 		supprimerSalleButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -53,6 +54,7 @@ public class NouvelleReservationPanel extends JPanel{
 			}
 		});
 		salleButton = new JButton("entrer infos");
+		salleButton.setBackground(new Color(194, 194, 194));
 		salleButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
