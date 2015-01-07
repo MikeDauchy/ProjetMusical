@@ -50,8 +50,10 @@ public class DialogueConsulterReservation extends JPanel{
 		this.dialog = dialog;
 		setLayout( new BorderLayout());
 		
-		btnJourPrec.setBackground(new Color(250, 250, 250));
-		btnJourSuiv.setBackground(new Color(250, 250, 250));
+		btnJourPrec.setBackground(new Color(52, 52, 52));
+		btnJourPrec.setForeground(Color.white);
+		btnJourSuiv.setBackground(new Color(52, 52, 52));
+		btnJourSuiv.setForeground(Color.white);
 		
 		Date dateRef = new Date();
 		dateRef.setHours(1);
@@ -63,13 +65,16 @@ public class DialogueConsulterReservation extends JPanel{
 		//creation de l'entete
 		creationListenerBtnPrec();
 		creationListenerBtnSuiv();
+		JPanel panelTitre = new JPanel();
+		panelTitre.setLayout(new GridLayout(1, 1));
+		panelTitre.add(labelTitre);
+		panelTitre.setBackground(new Color(66, 202, 229));
 		labelTitre.setText(dateFormat.format(dateDeReference.getTime()));
-		labelTitre.setForeground(Color.white);
+		labelTitre.setForeground(Color.WHITE);
 		panelEnTete.setLayout(new GridLayout(1, 3));
 		panelEnTete.add(btnJourPrec);
-		panelEnTete.add(labelTitre);
+		panelEnTete.add(panelTitre);
 		panelEnTete.add(btnJourSuiv);
-		panelEnTete.setBackground(new Color(52, 52, 52));
 		//
 		add(panelEnTete, BorderLayout.NORTH);
 		
@@ -88,7 +93,6 @@ public class DialogueConsulterReservation extends JPanel{
 		}
 		panelAgenda = new PanelAgenda(listReservation, (Calendar)dateDeReference.clone(), dialog);
 		panelContenu.add(panelAgenda);
-		panelContenu.setBackground(new Color(52, 52, 52));
 		//
 		add(panelContenu, BorderLayout.CENTER);
 		
